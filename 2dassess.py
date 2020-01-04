@@ -29,13 +29,12 @@ def setupParserOptions():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', '--input',
                     help="Input mrcs file of 2D class averages.")
+    ap.add_argument('-m', '--model',
+                    help='Path to the model.h5 file.')
     ap.add_argument('-n', '--name', default='particle',
                     help="Name of the particle")
     ap.add_argument('-o', '--output', default='2DAssess',
                     help="Name of the output directory.")
-    ap.add_argument('-m', '--model',
-                    default='/lsi/groups/mcianfroccolab/yilai/codes/classavg_class/models/resnet34_d0.5_v2.2_highlr_size256_lanczos.h5',
-                    help='Path to the model.h5 file.')
     args = vars(ap.parse_args())
     return args
 

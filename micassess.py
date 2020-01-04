@@ -30,7 +30,6 @@ def setupParserOptions():
     ap.add_argument('-i', '--input',
                     help="Input directory of the micrographs in mrc format. Cannot contain other directories inside (excluding directories made by MicAssess).")
     ap.add_argument('-m', '--model',
-                    default='../codes/microclass/models/resnet34_trainv2_0502_fc512_d0.5_maskedimg_long.h5',
                     help='Path to the model.h5 file.')
     ap.add_argument('-b', '--batch_size', type=int, default=32,
                     help="Batch size used in prediction.")
