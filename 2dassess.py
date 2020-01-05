@@ -21,7 +21,7 @@ import glob
 import pickle
 from functools import partial, update_wrapper
 from itertools import product
-from classavg_preprocessing import preprocess
+from classavg_preprocessing_p import preprocess
 from check_center_p import check_center
 from classavg2jpg_p import save_mrcs
 
