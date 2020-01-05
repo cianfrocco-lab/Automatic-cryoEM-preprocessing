@@ -32,9 +32,9 @@ def setupParserOptions():
     ap.add_argument('-m', '--model',
                     help='Path to the model.h5 file.')
     ap.add_argument('-b', '--batch_size', type=int, default=32,
-                    help="Batch size used in prediction.")
+                    help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('-t', '--threshold', type=float, default=0.1,
-                    help="Threshold for classification.")
+                    help="Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.")
     args = vars(ap.parse_args())
     return args
 

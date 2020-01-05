@@ -32,9 +32,9 @@ def setupParserOptions():
     ap.add_argument('-m', '--model',
                     help='Path to the model.h5 file.')
     ap.add_argument('-n', '--name', default='particle',
-                    help="Name of the particle")
+                    help="Name of the particle. Default is particle.")
     ap.add_argument('-o', '--output', default='2DAssess',
-                    help="Name of the output directory.")
+                    help="Name of the output directory. Default is 2DAssess.")
     args = vars(ap.parse_args())
     return args
 
