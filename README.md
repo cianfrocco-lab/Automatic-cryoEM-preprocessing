@@ -25,7 +25,7 @@ pip install tensorflow==1.10.1 keras==2.2.5 Pillow==4.3.0 mrcfile==1.1.2 pandas=
 
 **Download .h5 model files:**
 
-To download this code and model files for MicAssess and 2DAssess, please go to https://cosmic-cryoem.org/software/cryo-assess/. You will need to fill in a short form, agree the terms and conditions, and we will email you the download link. These pre-trained neural networks are freely available for academic research.
+You will need the pre-trained model files to run MicAssess and 2DAssess. To download them, please go to https://cosmic-cryoem.org/software/cryo-assess/. You will need to fill in a short form, agree the terms and conditions, and we will email you the download link. These pre-trained neural networks are freely available for academic research.
 
 **MicAssess:**
 
