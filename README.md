@@ -29,6 +29,8 @@ You will need the pre-trained model files to run MicAssess and 2DAssess. To down
 
 **MicAssess:**
 
+You will need to activate the conda environment by ```conda activate cryoassess``` before using MicAssess.
+
 To run MicAssess:
 ```
 python micassess.py -i <a micrograph star file> -m <model file>
@@ -49,6 +51,8 @@ Note: if memory warning appears:
 Reduce the batch size by adding ‘-b 16’, or even a smaller number (8 or 4). The default batch size is 32. You can also increase the batch size to a higher number like 64, if your memory allows. Higher batch size means faster.
 
 **2DAssess:**
+
+You will need to activate the conda environment by ```conda activate cryoassess``` before using 2DAssess.
 
 To run 2DAssess:
 ```
