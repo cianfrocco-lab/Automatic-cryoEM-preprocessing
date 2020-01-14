@@ -21,7 +21,10 @@ conda activate cryoassess
 ```
 pip install tensorflow==1.10.1 keras==2.2.5 Pillow==4.3.0 mrcfile==1.1.2 pandas==0.25.3 opencv-python==4.1.2.30 scikit-image==0.16.2
 ```
-(if using GPU, change tensorflow==1.10.1 to tensorflow-gpu==1.10.1)
+Alternatively, if using GPU:
+```
+pip install tensorflow-gpu==1.10.1 keras==2.2.5 Pillow==4.3.0 mrcfile==1.1.2 pandas==0.25.3 opencv-python==4.1.2.30 scikit-image==0.16.2
+```
 
 **Download .h5 model files:**
 
