@@ -24,12 +24,13 @@ from itertools import product
 from classavg_preprocessing_p import preprocess
 from check_center_p import check_center
 from classavg2jpg_p import save_mrcs
+import re
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', '--input',
                     help="Input mrcs file of 2D class averages.")
-    ap.add_argument('-m', '--model',
+    ap.add_argument('-m', '--model', default='./models/2dassess_062119.h5',
                     help='Path to the model.h5 file.')
     ap.add_argument('-n', '--name', default='particle',
                     help="Name of the particle. Default is particle.")
@@ -98,9 +99,18 @@ def predict(**args):
         i = i + 1
 
     shutil.rmtree('data') # after prediction, remove the data directory
+    good_idx = []
+    for fname in os.listdir('Good'):
+        good_idx.append(re.findall((args['name']+'_'+'(\d+)'), fname[:-4])[0])
+
     print('All finished! Outputs are stored in', test_data_dir)
+    print('Good class averages indices are (starting from 1): ', end='')
+    print(', '.join(good_idx))
 
 if __name__ == '__main__':
+    start_dir = os.getcwd()
     args = setupParserOptions()
+    args['model'] = os.path.abspath(args['model'])
+    os.chdir(start_dir)
     save_mrcs(**args)
     predict(**args)

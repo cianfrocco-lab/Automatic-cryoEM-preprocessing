@@ -55,7 +55,7 @@ def cutbyradius(img):
 
 def save_mrcs(**args):
     print('Converting mrcs to jpg....')
-    os.chdir(os.path.dirname(args['input']))
+    os.chdir(os.path.abspath(os.path.dirname(args['input']))) # navigate to the par dir of input file
     try:
         shutil.rmtree(args['output'])
     except OSError:
@@ -63,7 +63,7 @@ def save_mrcs(**args):
     os.mkdir(args['output'])
     os.mkdir(os.path.join(args['output'], 'data'))
 
-    avg_mrc = mrcfile.open(args['input']).data
+    avg_mrc = mrcfile.open(os.path.basename(args['input'])).data
     if len(avg_mrc.shape) == 3:
         num_part = avg_mrc.shape[0]
     elif len(avg_mrc.shape) == 2:
