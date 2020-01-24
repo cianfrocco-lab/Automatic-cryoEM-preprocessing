@@ -32,6 +32,7 @@ You will need the pre-trained model files to run MicAssess and 2DAssess. To down
 
 **MicAssess:**
 
+Note: MicAssess currently only works on K2 camera data.
 You will need to activate the conda environment by ```conda activate cryoassess``` before using MicAssess.
 
 To run MicAssess:
