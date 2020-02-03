@@ -125,8 +125,7 @@ def predict(**args):
     batch_size = args['batch_size']
     test_data_dir = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess') # MicAssess is in the par dir of input file
     model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
-    test_datagen = ImageDataGenerator(
-        preprocessing_function=preprocess)
+    test_datagen = ImageDataGenerator(preprocessing_function=preprocess)
     test_generator = test_datagen.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
     prob = model.predict_generator(test_generator)
     print('Assessment finished. Copying files to good and bad directories....')
