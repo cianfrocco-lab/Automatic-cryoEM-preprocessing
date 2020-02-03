@@ -100,7 +100,7 @@ def save_image_k2(mrc_name, height=494):
         else:
             micrograph = micrograph
         new_img = scale_image(micrograph, height)
-        new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
+        new_img.save(os.path.join('MicAssess', 'jpgs', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
     except ValueError:
         print('Warning - Having trouble converting this file:', mrc_name)
         pass
@@ -116,7 +116,7 @@ def save_image_k3(mrc_name, height=494):
         short_edge = min(np.array(new_img).shape[0], np.array(new_img).shape[1])
         new_img_left = crop_left(np.array(new_img), short_edge, short_edge)
         new_img_right = crop_right(np.array(new_img), short_edge, short_edge)
-        new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
+        new_img.save(os.path.join('MicAssess', 'jpgs', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
         new_img_left.save(os.path.join('MicAssess', 'k3_left', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
         new_img_right.save(os.path.join('MicAssess', 'k3_right', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
     except ValueError:
@@ -131,7 +131,8 @@ def mrc2jpg(**args):
     except OSError:
         pass
     os.mkdir('MicAssess')
-    os.mkdir(os.path.join('MicAssess', 'data'))
+    os.mkdir(os.path.join('MicAssess', 'jpgs'))
+    os.mkdir(os.path.join('MicAssess', 'jpgs', 'data'))
 
     if args['detector'] == 'K3':
         os.mkdir(os.path.join('MicAssess', 'k3_left'))
