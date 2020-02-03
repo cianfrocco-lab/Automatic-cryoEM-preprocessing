@@ -71,6 +71,10 @@ def scale_image(img, height=494):
 def save_image(mrc_name, height=494):
     try:
         micrograph = mrcfile.open(mrc_name, permissive=True).data
+        if len(micrograph.shape) == 3:
+            micrograph = micrograph.reshape((micrograph.shape[1], micrograph.shape[2]))
+        else:
+            micrograph = micrograph
         new_img = scale_image(micrograph, height)
         new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
     except ValueError:
