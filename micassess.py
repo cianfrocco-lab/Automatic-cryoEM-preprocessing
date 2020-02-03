@@ -171,11 +171,11 @@ def predict(**args):
         test_datagen_left = ImageDataGenerator(preprocessing_function=preprocess_k3_left)
         test_generator_left = test_datagen_left.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_left = model.predict_generator(test_generator_left)
-        print(prob_left)
+        print('Left: ',prob_left)
         test_datagen_right = ImageDataGenerator(preprocessing_function=preprocess_k3_right)
         test_generator_right = test_datagen_right.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_right = model.predict_generator(test_generator_right)
-        print(prob_right)
+        print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
         print(prob)
 
@@ -187,7 +187,6 @@ def predict(**args):
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
     goodlist = list(sorted(glob.glob('data/*.jpg')[i] for i in good_idx))
-    print(goodlist)
     badlist = list(sorted(glob.glob('data/*.jpg')[i] for i in bad_idx))
 
     pool = mp.Pool(mp.cpu_count())
@@ -205,10 +204,8 @@ def predict(**args):
         pass
     star_df = star2df(os.path.basename(args['input']))
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
-    print(goodlist_base)
     badindex = []
     for i in range(len(star_df)):
-        print(i)
         if os.path.basename(star_df['_rlnMicrographName\n'][i])[:-4] not in goodlist_base:
             badindex.append(i)
     new_star_df = star_df.drop(badindex)
