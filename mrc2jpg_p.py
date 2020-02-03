@@ -52,13 +52,16 @@ def downsample(x, height=494):
     m,n = x.shape[-2:]
     # factor = width/n
     factor = m/height
+    width = round(n/factor/2)*2
     F = np.fft.rfft2(x)
-    #F = np.fft.fftshift(F)
-    S = round(2*factor)
-    A = F[...,0:m//S,0:n//S+2]
-    B = F[...,-m//S+1:,0:n//S+2]
-    F = np.concatenate([A,B], axis=-2)
-    f = np.fft.irfft2(F)
+    A = F[...,0:height//2,0:width//2+1]
+    B = F[...,-height//2:,0:width//2+1]
+    F = np.concatenate([A,B], axis=0)            
+    # S = round(2*factor)
+    # A = F[...,0:m//S,0:n//S+2]
+    # B = F[...,-m//S+1:,0:n//S+2]
+    # F = np.concatenate([A,B], axis=-2)
+    f = np.fft.irfft2(F, s=(height, width))
     return f
 
 def scale_image(img, height=494):
