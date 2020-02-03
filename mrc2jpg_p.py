@@ -77,14 +77,20 @@ def crop_left(img,cropx,cropy):
     y = img.shape[0]
     startx = 0
     starty = y//2-(cropy//2)
-    return img[starty:starty+cropy,startx:startx+cropx]
+    new_img_left = img[starty:starty+cropy,startx:startx+cropx]
+    new_img_left = Image.fromarray(new_img_left)
+    new_img_left = new_img_left.convert("L")
+    return new_img_left
 
 def crop_right(img,cropx,cropy):
     y = img.shape[0]
     x = img.shape[1]
     startx = x-cropx
     starty = y//2-(cropy//2)
-    return img[starty:starty+cropy,startx:startx+cropx]
+    new_img_right = img[starty:starty+cropy,startx:startx+cropx]
+    new_img_right = Image.fromarray(new_img_right)
+    new_img_right = new_img_right.convert("L")
+    return new_img_right
 
 def save_image_k2(mrc_name, height=494):
     try:
@@ -107,9 +113,9 @@ def save_image_k3(mrc_name, height=494):
         else:
             micrograph = micrograph
         new_img = scale_image(micrograph, height)
-        short_edge = min(new_img.shape[0], new_img.shape[1])
-        new_img_left = crop_left(img, short_edge, short_edge)
-        new_img_right = crop_right(img, short_edge, short_edge)
+        short_edge = min(np.array(new_img).shape[0], np.array(new_img).shape[1])
+        new_img_left = crop_left(np.array(new_img), short_edge, short_edge)
+        new_img_right = crop_right(np.array(new_img), short_edge, short_edge)
         new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
         new_img_left.save(os.path.join('MicAssess', 'k3_left', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
         new_img_right.save(os.path.join('MicAssess', 'k3_right', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
