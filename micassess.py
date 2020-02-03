@@ -208,6 +208,7 @@ def predict(**args):
     print(goodlist_base)
     badindex = []
     for i in range(len(star_df)):
+        print(i)
         if os.path.basename(star_df['_rlnMicrographName\n'][i])[:-4] not in goodlist_base:
             badindex.append(i)
     new_star_df = star_df.drop(badindex)
