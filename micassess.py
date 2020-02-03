@@ -155,13 +155,15 @@ def predict(**args):
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
     goodlist = list(sorted(glob.glob('data/*.jpg')[i] for i in good_idx))
+    print(goodlist)
     badlist = list(sorted(glob.glob('data/*.jpg')[i] for i in bad_idx))
+    print(badlist)
 
     pool = mp.Pool(mp.cpu_count())
     pool.map(copygoodfile, [file for file in goodlist])
     pool.map(copybadfile, [file for file in badlist])
     pool.close()
-    
+
     os.chdir(os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess'))
     shutil.rmtree('jpgs') # after prediction, remove the data directory
     if detector == 'K3':
