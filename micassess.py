@@ -146,6 +146,7 @@ def predict(**args):
         prob_right = model.predict_generator(test_generator_right)
         print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
+        print(prob)
 
     print('Assessment finished. Copying files to good and bad directories....')
     os.chdir(test_data_dir)
