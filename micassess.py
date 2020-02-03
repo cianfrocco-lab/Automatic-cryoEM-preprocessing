@@ -170,11 +170,11 @@ def predict(**args):
 
     if detector == 'K3':
         test_datagen_left = ImageDataGenerator(preprocessing_function=preprocess_k3_left)
-        test_generator_left = test_datagen_left.flow_from_directory(test_data_dir, target_size=(494, 696), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        test_generator_left = test_datagen_left.flow_from_directory(test_data_dir, target_size=(256, 256), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_left = model.predict_generator(test_generator_left)
         print('Left: ',prob_left)
         test_datagen_right = ImageDataGenerator(preprocessing_function=preprocess_k3_right)
-        test_generator_right = test_datagen_right.flow_from_directory(test_data_dir, target_size=(494, 696), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        test_generator_right = test_datagen_right.flow_from_directory(test_data_dir, target_size=(256, 256), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_right = model.predict_generator(test_generator_right)
         print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
