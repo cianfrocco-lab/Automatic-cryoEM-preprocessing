@@ -21,8 +21,6 @@ def setupParserOptions():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', '--input',
                     help="Provide the path to the micrographs.star file.")
-    # ap.add_argument('-w', '--width', default='512',
-    #                 help="The width of the .jpg image after scaling down. Hardcoded to 512 for now, not functional.")
     args = vars(ap.parse_args())
     return args
 
@@ -49,31 +47,34 @@ def star2miclist(starfile):
 
     return mic_list
 
-def downsample(x, width=512):
+def downsample(x, height=494):
     """ Downsample 2d array using fourier transform """
     m,n = x.shape[-2:]
     # factor = width/n
-    factor = n/width
+    factor = m/height
+    width = round(n/factor/2)*2
     F = np.fft.rfft2(x)
-    #F = np.fft.fftshift(F)
-    S = round(2*factor)
-    A = F[...,0:m//S,0:n//S+2]
-    B = F[...,-m//S+1:,0:n//S+2]
-    F = np.concatenate([A,B], axis=-2)
-    f = np.fft.irfft2(F)
+    A = F[...,0:height//2,0:width//2+1]
+    B = F[...,-height//2:,0:width//2+1]
+    F = np.concatenate([A,B], axis=0)
+    # S = round(2*factor)
+    # A = F[...,0:m//S,0:n//S+2]
+    # B = F[...,-m//S+1:,0:n//S+2]
+    # F = np.concatenate([A,B], axis=-2)
+    f = np.fft.irfft2(F, s=(height, width))
     return f
 
-def scale_image(img, width=512):
-    new_img = downsample(img, width)
+def scale_image(img, height=494):
+    new_img = downsample(img, height)
     new_img = ((new_img-new_img.min())/((new_img.max()-new_img.min())+1e-7)*255).astype('uint8')
     new_img = Image.fromarray(new_img)
     new_img = new_img.convert("L")
     return new_img
 
-def save_image(mrc_name, width=512):
+def save_image(mrc_name, height=494):
     try:
         micrograph = mrcfile.open(mrc_name, permissive=True).data
-        new_img = scale_image(micrograph, width)
+        new_img = scale_image(micrograph, height)
         new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
     except ValueError:
         print('Warning - Having trouble converting this file:', mrc_name)
