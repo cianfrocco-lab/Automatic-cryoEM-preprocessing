@@ -166,6 +166,7 @@ def predict(**args):
         test_datagen = ImageDataGenerator(preprocessing_function=preprocess_k2)
         test_generator = test_datagen.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob = model.predict_generator(test_generator)
+        print(prob)
 
     if detector == 'K3':
         test_datagen_left = ImageDataGenerator(preprocessing_function=preprocess_k3_left)
@@ -177,7 +178,6 @@ def predict(**args):
         prob_right = model.predict_generator(test_generator_right)
         print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
-        print(prob)
 
     print('Assessment finished. Copying files to good and bad directories....')
     os.chdir(test_data_dir)
