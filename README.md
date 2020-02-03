@@ -3,7 +3,7 @@ Tools to run user-free preprocessing of cryo-EM datasets: https://www.biorxiv.or
 
 **Don't want to read the instructions but still want to try it out?**
 
-MicAssess and 2DAssess will soon be incorporated into the freely available for academic research on COSMIC2 science gateway: https://cosmic2.sdsc.edu:8443/gateway/. Just upload your input files and you can run the jobs on the cloud!
+MicAssess and 2DAssess are incorporated into the freely available for academic research on COSMIC2 science gateway: https://cosmic2.sdsc.edu:8443/gateway/. Just upload your input files and you can run the jobs on the cloud!
 
 **Installation:**
 
