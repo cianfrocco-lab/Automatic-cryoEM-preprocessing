@@ -21,6 +21,8 @@ def setupParserOptions():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', '--input',
                     help="Provide the path to the micrographs.star file.")
+    ap.add_argument('-d', '--detector', default='K2',
+                    help='K2 or K3 detector?')
     args = vars(ap.parse_args())
     return args
 
@@ -56,7 +58,7 @@ def downsample(x, height=494):
     F = np.fft.rfft2(x)
     A = F[...,0:height//2,0:width//2+1]
     B = F[...,-height//2:,0:width//2+1]
-    F = np.concatenate([A,B], axis=0)            
+    F = np.concatenate([A,B], axis=0)
     # S = round(2*factor)
     # A = F[...,0:m//S,0:n//S+2]
     # B = F[...,-m//S+1:,0:n//S+2]
@@ -71,7 +73,20 @@ def scale_image(img, height=494):
     new_img = new_img.convert("L")
     return new_img
 
-def save_image(mrc_name, height=494):
+def crop_left(img,cropx,cropy):
+    y = img.shape[0]
+    startx = 0
+    starty = y//2-(cropy//2)
+    return img[starty:starty+cropy,startx:startx+cropx]
+
+def crop_right(img,cropx,cropy):
+    y = img.shape[0]
+    x = img.shape[1]
+    startx = x-cropx
+    starty = y//2-(cropy//2)
+    return img[starty:starty+cropy,startx:startx+cropx]
+
+def save_image_k2(mrc_name, height=494):
     try:
         micrograph = mrcfile.open(mrc_name, permissive=True).data
         if len(micrograph.shape) == 3:
@@ -80,6 +95,24 @@ def save_image(mrc_name, height=494):
             micrograph = micrograph
         new_img = scale_image(micrograph, height)
         new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
+    except ValueError:
+        print('Warning - Having trouble converting this file:', mrc_name)
+        pass
+
+def save_image_k3(mrc_name, height=494):
+    try:
+        micrograph = mrcfile.open(mrc_name, permissive=True).data
+        if len(micrograph.shape) == 3:
+            micrograph = micrograph.reshape((micrograph.shape[1], micrograph.shape[2]))
+        else:
+            micrograph = micrograph
+        new_img = scale_image(micrograph, height)
+        short_edge = min(new_img.shape[0], new_img.shape[1])
+        new_img_left = crop_left(img, short_edge, short_edge)
+        new_img_right = crop_right(img, short_edge, short_edge)
+        new_img.save(os.path.join('MicAssess', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
+        new_img_left.save(os.path.join('MicAssess', 'k3_left', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
+        new_img_right.save(os.path.join('MicAssess', 'k3_right', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
     except ValueError:
         print('Warning - Having trouble converting this file:', mrc_name)
         pass
@@ -94,10 +127,20 @@ def mrc2jpg(**args):
     os.mkdir('MicAssess')
     os.mkdir(os.path.join('MicAssess', 'data'))
 
+    if args['detector'] == 'K3':
+        os.mkdir(os.path.join('MicAssess', 'k3_left'))
+        os.mkdir(os.path.join('MicAssess', 'k3_right'))
+        os.mkdir(os.path.join('MicAssess', 'k3_left', 'data'))
+        os.mkdir(os.path.join('MicAssess', 'k3_right', 'data'))
+
     pool = mp.Pool(mp.cpu_count())
     print('CPU count is ', mp.cpu_count())
-    pool.map(save_image, [mrc_name for mrc_name in mic_list])
-    pool.close()
+    if args['detector'] == 'K2':
+        pool.map(save_image_k2, [mrc_name for mrc_name in mic_list])
+        pool.close()
+    elif args['detector'] == 'K3':
+        pool.map(save_image_k3, [mrc_name for mrc_name in mic_list])
+        pool.close()
     print('Conversion finished.')
 
 if __name__ == '__main__':

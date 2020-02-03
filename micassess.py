@@ -67,19 +67,6 @@ def crop_center(img,cropx,cropy):
     starty = y//2-(cropy//2)
     return img[starty:starty+cropy,startx:startx+cropx]
 
-def crop_left(img,cropx,cropy):
-    y = img.shape[0]
-    startx = 0
-    starty = y//2-(cropy//2)
-    return img[starty:starty+cropy,startx:startx+cropx]
-
-def crop_right(img,cropx,cropy):
-    y = img.shape[0]
-    x = img.shape[1]
-    startx = x-cropx
-    starty = y//2-(cropy//2)
-    return img[starty:starty+cropy,startx:startx+cropx]
-
 def preprocess_k2(img):
     '''
     Crop the images to make it square.
@@ -170,11 +157,11 @@ def predict(**args):
 
     if detector == 'K3':
         test_datagen_left = ImageDataGenerator(preprocessing_function=preprocess_k3_left)
-        test_generator_left = test_datagen_left.flow_from_directory(test_data_dir, target_size=(256, 256), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        test_generator_left = test_datagen_left.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_left = model.predict_generator(test_generator_left)
         print('Left: ',prob_left)
         test_datagen_right = ImageDataGenerator(preprocessing_function=preprocess_k3_right)
-        test_generator_right = test_datagen_right.flow_from_directory(test_data_dir, target_size=(256, 256), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        test_generator_right = test_datagen_right.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_right = model.predict_generator(test_generator_right)
         print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
