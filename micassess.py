@@ -161,6 +161,7 @@ def predict(**args):
     pool.map(copygoodfile, [file for file in goodlist])
     pool.map(copybadfile, [file for file in badlist])
     pool.close()
+    
     os.chdir(os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess'))
     shutil.rmtree('jpgs') # after prediction, remove the data directory
     if detector == 'K3':
