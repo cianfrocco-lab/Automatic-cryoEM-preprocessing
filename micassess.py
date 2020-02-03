@@ -31,6 +31,8 @@ def setupParserOptions():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', '--input',
                     help="Input directory of the micrographs in mrc format. Cannot contain other directories inside (excluding directories made by MicAssess).")
+    ap.add_argument('-d', '--detector', default='K2',
+                    help='K2 or K3 detector?')
     ap.add_argument('-m', '--model', default='./models/micassess_051419.h5',
                     help='Path to the model.h5 file.')
     ap.add_argument('-o', '--output', default='good_micrographs.star',
@@ -65,7 +67,20 @@ def crop_center(img,cropx,cropy):
     starty = y//2-(cropy//2)
     return img[starty:starty+cropy,startx:startx+cropx]
 
-def preprocess(img):
+def crop_left(img,cropx,cropy):
+    y = img.shape[0]
+    startx = 0
+    starty = y//2-(cropy//2)
+    return img[starty:starty+cropy,startx:startx+cropx]
+
+def crop_right(img,cropx,cropy):
+    y = img.shape[0]
+    x = img.shape[1]
+    startx = x-cropx
+    starty = y//2-(cropy//2)
+    return img[starty:starty+cropy,startx:startx+cropx]
+
+def preprocess_k2(img):
     '''
     Crop the images to make it square.
     Center to 0 and divide by std to normalize.
@@ -76,6 +91,26 @@ def preprocess(img):
     norm_img = (square_img - np.mean(square_img))/np.std(square_img)
     masked_img = mask_img(norm_img)
     return masked_img
+
+def preprocess_k3_left(img):
+    '''
+    Similar to k2, but outputs two images (crop on the left and right respectively)
+    '''
+    short_edge = min(img.shape[0], img.shape[1])
+    square_img_l = crop_left(img, short_edge, short_edge)
+    norm_img_l = (square_img_l - np.mean(square_img_l))/np.std(square_img_l)
+    masked_img_l = mask_img(norm_img_l)
+    return masked_img_l
+
+def preprocess_k3_right(img):
+    '''
+    Similar to k2, but outputs two images (crop on the left and right respectively)
+    '''
+    short_edge = min(img.shape[0], img.shape[1])
+    square_img_r = crop_right(img, short_edge, short_edge)
+    norm_img_r = (square_img_r - np.mean(square_img_r))/np.std(square_img_r)
+    masked_img_r = mask_img(norm_img_r)
+    return masked_img_r
 
 def copygoodfile(file):
     copy2(file, 'pred_good')
@@ -122,12 +157,25 @@ def predict(**args):
     start_dir = os.getcwd()
     print('Start to assess micrographs with MicAssess.')
     model = load_model(args['model'])
+    detector = args['detector']
     batch_size = args['batch_size']
     test_data_dir = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess') # MicAssess is in the par dir of input file
     model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
-    test_datagen = ImageDataGenerator(preprocessing_function=preprocess)
-    test_generator = test_datagen.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
-    prob = model.predict_generator(test_generator)
+
+    if detector == 'K2':
+        test_datagen = ImageDataGenerator(preprocessing_function=preprocess_k2)
+        test_generator = test_datagen.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        prob = model.predict_generator(test_generator)
+
+    if detector == 'K3':
+        test_datagen_left = ImageDataGenerator(preprocessing_function=preprocess_k3_left)
+        test_generator_left = test_datagen_left.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        prob_left = model.predict_generator(test_generator_left)
+        test_datagen_right = ImageDataGenerator(preprocessing_function=preprocess_k3_right)
+        test_generator_right = test_datagen_right.flow_from_directory(test_data_dir, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
+        prob_right = model.predict_generator(test_generator_right)
+        prob = np.maximum(prob_left, prob_right)
+
     print('Assessment finished. Copying files to good and bad directories....')
     os.chdir(test_data_dir)
     os.mkdir('pred_good')
