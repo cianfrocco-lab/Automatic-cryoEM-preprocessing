@@ -153,7 +153,9 @@ def predict(**args):
     os.mkdir('../pred_bad')
 
     good_idx = np.where(prob > args['threshold'])[0]
+    print(good_idx)
     bad_idx = np.where(prob <= args['threshold'])[0]
+    print(bad_idx)
     goodlist = list(sorted(glob.glob('data/*.jpg')[i] for i in good_idx))
     print(goodlist)
     badlist = list(sorted(glob.glob('data/*.jpg')[i] for i in bad_idx))
