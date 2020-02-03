@@ -141,10 +141,10 @@ def predict(**args):
         test_datagen = ImageDataGenerator(preprocessing_function=preprocess)
         test_generator_left = test_datagen.flow_from_directory(test_data_dir_left, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_left = model.predict_generator(test_generator_left)
-        print('Left: ',prob_left)
+        # print('Left: ',prob_left)
         test_generator_right = test_datagen.flow_from_directory(test_data_dir_right, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_right = model.predict_generator(test_generator_right)
-        print('Right: ',prob_right)
+        # print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
 
     print('Assessment finished. Copying files to good and bad directories....')
@@ -155,9 +155,7 @@ def predict(**args):
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
     goodlist = list(sorted(glob.glob('data/*.jpg'))[i] for i in good_idx)
-    print(goodlist)
     badlist = list(sorted(glob.glob('data/*.jpg'))[i] for i in bad_idx)
-    print(badlist)
 
     pool = mp.Pool(mp.cpu_count())
     pool.map(copygoodfile, [file for file in goodlist])
