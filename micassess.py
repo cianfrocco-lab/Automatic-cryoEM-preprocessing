@@ -146,7 +146,6 @@ def predict(**args):
         prob_right = model.predict_generator(test_generator_right)
         print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
-        print(prob)
 
     print('Assessment finished. Copying files to good and bad directories....')
     os.chdir(test_data_dir)
@@ -154,12 +153,10 @@ def predict(**args):
     os.mkdir('../pred_bad')
 
     good_idx = np.where(prob > args['threshold'])[0]
-    print(good_idx)
     bad_idx = np.where(prob <= args['threshold'])[0]
-    print(bad_idx)
-    goodlist = list(sorted(glob.glob('data/*.jpg')[i] for i in good_idx))
+    goodlist = list(sorted(glob.glob('data/*.jpg'))[i] for i in good_idx)
     print(goodlist)
-    badlist = list(sorted(glob.glob('data/*.jpg')[i] for i in bad_idx))
+    badlist = list(sorted(glob.glob('data/*.jpg'))[i] for i in bad_idx)
     print(badlist)
 
     pool = mp.Pool(mp.cpu_count())
