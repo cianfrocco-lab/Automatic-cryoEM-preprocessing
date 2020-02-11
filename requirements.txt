@@ -1,0 +1,6 @@
+keras==2.2.5
+Pillow==4.3.0
+mrcfile==1.1.2
+pandas==0.25.3
+opencv-python==4.1.2.30
+scikit-image==0.16.2
