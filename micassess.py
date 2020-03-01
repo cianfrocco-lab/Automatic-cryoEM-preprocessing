@@ -162,6 +162,7 @@ def predict(**args):
 
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
+    print(os.getcwd())
     goodlist = list(sorted(glob.glob('jpgs/data/*.jpg'))[i] for i in good_idx)
     badlist = list(sorted(glob.glob('jpgs/data/*.jpg'))[i] for i in bad_idx)
 
