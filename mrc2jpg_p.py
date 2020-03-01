@@ -125,7 +125,8 @@ def save_image_k3(mrc_name, height=494):
         pass
 
 def mrc2jpg(**args):
-    os.chdir(os.path.dirname(args['input'])) # navigate to the par dir of input file
+    input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
+    os.chdir(input_dir) # navigate to the par dir of input file
     # os.chdir(os.path.abspath(os.path.dirname(args['input'])) # navigate to the par dir of input file
     mic_list = star2miclist(os.path.basename(args['input']))
     try:
