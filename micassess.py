@@ -41,6 +41,8 @@ def setupParserOptions():
                     help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('-t', '--threshold', type=float, default=0.1,
                     help="Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.")
+    ap.add_argument('--threads', type=int, default=None,
+                    help='Number of threads for conversion. Dedault is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
     args = vars(ap.parse_args())
     return args
 
@@ -104,8 +106,9 @@ def star2df(starfile):
     star_df = pd.DataFrame(star_df)
     star_df = star_df.dropna()
     star_df.columns = keys
+    micname_key = [x for x in keys if 'MicrographName' in x][0]
 
-    return star_df
+    return star_df, micname_key
 
 def df2star(star_df, star_name):
     header = ['data_ \n', '\n', 'loop_ \n']
@@ -126,7 +129,10 @@ def predict(**args):
     model = load_model(args['model'])
     detector = args['detector']
     batch_size = args['batch_size']
-    test_data_dir = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess', 'jpgs') # MicAssess is in the par dir of input file
+    input_dir = os.path.join(args['input'], os.pardir) # Directory where the input file is (par dir of input file).
+    os.chdir(input_dir)
+    # input_dir = os.path.abspath(os.path.join(args['input'], os.pardir)) # Directory where the input file is (par dir of input file).
+    test_data_dir = os.path.join(input_dir, 'MicAssess', 'jpgs') # MicAssess is in the par dir of input file
     model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
 
     if detector == 'K2':
@@ -136,8 +142,10 @@ def predict(**args):
         print(prob)
 
     if detector == 'K3':
-        test_data_dir_left = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess', 'k3_left')
-        test_data_dir_right = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess', 'k3_right')
+        # test_data_dir_left = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess', 'k3_left')
+        # test_data_dir_right = os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess', 'k3_right')
+        test_data_dir_left = os.path.join('MicAssess', 'k3_left')
+        test_data_dir_right = os.path.join('MicAssess', 'k3_right')
         test_datagen = ImageDataGenerator(preprocessing_function=preprocess)
         test_generator_left = test_datagen.flow_from_directory(test_data_dir_left, target_size=(494, 494), batch_size=batch_size, color_mode='grayscale', class_mode=None, shuffle=False)
         prob_left = model.predict_generator(test_generator_left)
@@ -148,9 +156,9 @@ def predict(**args):
         prob = np.maximum(prob_left, prob_right)
 
     print('Assessment finished. Copying files to good and bad directories....')
-    os.chdir(test_data_dir)
-    os.mkdir('../pred_good')
-    os.mkdir('../pred_bad')
+    # os.chdir(test_data_dir)
+    os.mkdir(os.path.join('MicAssess', 'pred_good'))
+    os.mkdir(os.path.join('MicAssess', 'pred_bad'))
 
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
@@ -162,24 +170,24 @@ def predict(**args):
     pool.map(copybadfile, [file for file in badlist])
     pool.close()
 
-    os.chdir(os.path.join(os.path.abspath(os.path.join(args['input'], os.pardir)), 'MicAssess'))
-    shutil.rmtree('jpgs') # after prediction, remove the data directory
+    # os.chdir(os.path.join(input_dir, 'MicAssess'))
+    shutil.rmtree(os.path.join('MicAssess', 'jpgs')) # after prediction, remove the data directory
     if detector == 'K3':
-        shutil.rmtree('k3_left')
-        shutil.rmtree('k3_right')
+        shutil.rmtree(os.path.join('MicAssess', 'k3_left'))
+        shutil.rmtree(os.path.join('MicAssess', 'k3_right'))
 
     # write the output file
-    os.chdir(start_dir)
-    os.chdir(os.path.abspath(os.path.dirname(args['input']))) # navigate to the par dir of input file
+    # os.chdir(start_dir)
+    # os.chdir(input_dir) # navigate to the par dir of input file
     try:
         os.remove(args['output'])
     except OSError:
         pass
-    star_df = star2df(os.path.basename(args['input']))
+    star_df, micname_key = star2df(os.path.basename(args['input']))
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     badindex = []
     for i in range(len(star_df)):
-        if os.path.basename(star_df['_rlnMicrographName\n'].iloc[i])[:-4] not in goodlist_base:
+        if os.path.basename(star_df[micname_key].iloc[i])[:-4] not in goodlist_base:
             badindex.append(i)
     new_star_df = star_df.drop(badindex)
     df2star(new_star_df, args['output'])
@@ -192,7 +200,7 @@ if __name__ == '__main__':
     # os.environ["CUDA_VISIBLE_DEVICES"]="0"
     start_dir = os.getcwd()
     args = setupParserOptions()
-    os.chdir(start_dir)
+    # os.chdir(start_dir)
     mrc2jpg(**args)
-    os.chdir(start_dir)
+    # os.chdir(start_dir)
     predict(**args)
