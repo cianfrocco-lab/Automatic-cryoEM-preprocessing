@@ -196,7 +196,7 @@ def predict(**args):
     print('All finished!')
 
 if __name__ == '__main__':
-    # os.environ["CUDA_VISIBLE_DEVICES"]="0"
+    os.environ["CUDA_VISIBLE_DEVICES"]="0"
     args = setupParserOptions()
     input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
     os.chdir(input_dir) # navigate to the par dir of input file
