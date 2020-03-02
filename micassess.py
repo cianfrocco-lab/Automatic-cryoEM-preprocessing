@@ -83,11 +83,11 @@ def preprocess(img):
     masked_img = mask_img(norm_img)
     return masked_img
 
-def copygoodfile(file):
-    copy2(file, '../pred_good')
+def copygoodfile(file, pred_good_path):
+    copy2(file, pred_good_path)
 
-def copybadfile(file):
-    copy2(file, '../pred_bad')
+def copybadfile(file, pred_bad_path):
+    copy2(file, pred_bad_path)
 
 def star2df(starfile):
     with open(starfile) as f:
