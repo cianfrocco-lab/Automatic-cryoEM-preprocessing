@@ -172,10 +172,10 @@ def predict(**args):
     pool.close()
 
     # os.chdir(os.path.join(input_dir, 'MicAssess'))
-    shutil.rmtree(os.path.join('MicAssess', 'jpgs')) # after prediction, remove the data directory
-    if detector == 'K3':
-        shutil.rmtree(os.path.join('MicAssess', 'k3_left'))
-        shutil.rmtree(os.path.join('MicAssess', 'k3_right'))
+    # shutil.rmtree(os.path.join('MicAssess', 'jpgs')) # after prediction, remove the data directory
+    # if detector == 'K3':
+        # shutil.rmtree(os.path.join('MicAssess', 'k3_left'))
+        # shutil.rmtree(os.path.join('MicAssess', 'k3_right'))
 
     # write the output file
     # os.chdir(start_dir)
