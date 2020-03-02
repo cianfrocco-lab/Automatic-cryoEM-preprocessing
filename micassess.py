@@ -44,7 +44,7 @@ def setupParserOptions():
     ap.add_argument('--threads', type=int, default=None,
                     help='Number of threads for conversion. Dedault is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
     ap.add_argument('--gpus', default='0',
-                    help='Specify which gpu(s) to use. Default is 0, which uses only one gpu.')
+                    help='Specify which gpu(s) to use, e.g. 0,1. Default is 0, which uses only one gpu.')
     args = vars(ap.parse_args())
     return args
 
