@@ -83,11 +83,11 @@ def preprocess(img):
     masked_img = mask_img(norm_img)
     return masked_img
 
-def copygoodfile(file, pred_good_path):
-    copy2(file, pred_good_path)
+def copygoodfile(file):
+    copy2(file, os.path.join('MicAssess','pred_good'))
 
-def copybadfile(file, pred_bad_path):
-    copy2(file, pred_bad_path)
+def copybadfile(file):
+    copy2(file, os.path.join('MicAssess','pred_bad'))
 
 def star2df(starfile):
     with open(starfile) as f:
@@ -172,10 +172,10 @@ def predict(**args):
     pool.close()
 
     # os.chdir(os.path.join(input_dir, 'MicAssess'))
-    # shutil.rmtree(os.path.join('MicAssess', 'jpgs')) # after prediction, remove the data directory
-    # if detector == 'K3':
-        # shutil.rmtree(os.path.join('MicAssess', 'k3_left'))
-        # shutil.rmtree(os.path.join('MicAssess', 'k3_right'))
+    shutil.rmtree(os.path.join('MicAssess', 'jpgs')) # after prediction, remove the data directory
+    if detector == 'K3':
+        shutil.rmtree(os.path.join('MicAssess', 'k3_left'))
+        shutil.rmtree(os.path.join('MicAssess', 'k3_right'))
 
     # write the output file
     # os.chdir(start_dir)
