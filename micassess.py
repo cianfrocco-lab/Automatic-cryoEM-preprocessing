@@ -43,6 +43,8 @@ def setupParserOptions():
                     help="Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.")
     ap.add_argument('--threads', type=int, default=None,
                     help='Number of threads for conversion. Dedault is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
+    ap.add_argument('--gpus', default='0',
+                    help='Specify which gpu(s) to use. Default is 0, which uses only one gpu.')
     args = vars(ap.parse_args())
     return args
 
@@ -196,8 +198,9 @@ def predict(**args):
     print('All finished!')
 
 if __name__ == '__main__':
-    os.environ["CUDA_VISIBLE_DEVICES"]="0"
     args = setupParserOptions()
+    os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+    os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
     input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
     os.chdir(input_dir) # navigate to the par dir of input file
     mrc2jpg(**args)
