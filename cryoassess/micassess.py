@@ -208,13 +208,8 @@ def input2star(args):
 
     micList = []
 
-    # if its a single file
-    if os.path.isfile(input):
-        micList.append(os.path.basename(input))
-    # Accept a pattern
-    else:
-        import glob
-        micList = [os.path.basename(x) for x in glob.glob(input)]
+    import glob
+    micList = [os.path.basename(x) for x in glob.glob(input)]
 
     # Get the dirname
     # folder = os.path.dirname(input)
