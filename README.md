@@ -23,7 +23,7 @@ conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 numpy=1.14.
 ```
 conda activate cryoassess
 ```
-3. Install emassess (this package) for cpu
+3. Install cryoassess (this package) for cpu
 ```
 pip install path-to-local-clone[cpu]
 ```
