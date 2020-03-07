@@ -36,7 +36,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name='emassess',  # Required
+    name='cryoassess',  # Required
 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
@@ -44,7 +44,8 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.0.0',  # Required
+    version='0.1.0',  # Required
+
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -162,8 +163,8 @@ setup(
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
        'console_scripts': [
-           'micassess=emassess.micassess:main',
-           '2dassess=emassess.2dassess:main',
+           'micassess=cryoassess.micassess:main',
+           '2dassess=cryoassess.2dassess:main',
        ],
     },
 
