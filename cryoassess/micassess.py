@@ -209,7 +209,8 @@ def input2star(args):
     micList = []
 
     import glob
-    micList = [os.path.basename(x) for x in glob.glob(input)]
+    input = os.path.basename(input)
+    micList = glob.glob(input)
 
     # Get the dirname
     # folder = os.path.dirname(input)
@@ -233,8 +234,8 @@ def main():
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
     input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
-    input2star(args)
     os.chdir(input_dir) # navigate to the par dir of input file/dir
+    input2star(args)
     mrc2jpg(**args)
     predict(**args)
 
