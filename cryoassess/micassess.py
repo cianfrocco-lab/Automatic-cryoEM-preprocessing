@@ -19,7 +19,7 @@ import os
 import argparse
 from shutil import copy2
 import glob
-from emassess.mrc2jpg_p import mrc2jpg
+from cryoassess.mrc2jpg_p import mrc2jpg
 import multiprocessing as mp
 import shutil
 import pandas as pd
