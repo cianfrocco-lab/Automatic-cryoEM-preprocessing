@@ -39,7 +39,9 @@ You will need the pre-trained model files to run MicAssess and 2DAssess. To down
 **MicAssess:**
 
 Note: MicAssess currently works on micrographs from both K2 and K3 camera.
+
 Note: MicAssess currently does not support star file from Relion 3.1.
+
 You will need to activate the conda environment by ```conda activate cryoassess``` before using MicAssess.
 
 To run MicAssess:
@@ -48,11 +50,17 @@ micassess -i <a micrograph star file> -m <model file>
 ```
 
 Optional arguments:
+
 -d, --detector: Either "K2" or "K3". Default is "K2".
+
 -o, --output: Name of the output star file. Default is good_micrographs.star.
+
 -b, --batch_size: Batch size used in prediction. Default is 32. Increasing this number will result in faster prediction, if your GPU memory allows. If memory error/warning appears, you should lower this number.
+
 -t, --threshold: Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.
+
 --threads: Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number (e.g. 10). This usually happens when you have super-resolution microgarphs from K3.
+
 --gpus: Specify which GPU(s) to use, e.g. 0,1,2,3. Default is 0, which uses only the first GPU.
 
 The input of MicAssess could be a .star file with a header similar to this:
