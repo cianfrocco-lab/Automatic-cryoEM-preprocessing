@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 '''
 Use the 2DAssess to assess class averages.
 Will predict each image files in the input directory and save to the folders

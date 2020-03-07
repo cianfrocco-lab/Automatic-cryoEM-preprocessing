@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 """
 Read class averages mrc file and save it to jpg.
 Automatically remove the edges.
