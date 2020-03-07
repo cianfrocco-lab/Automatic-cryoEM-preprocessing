@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 '''
 Use MicAssess to predict micrographs.
 Will predict each image files in the input directory as good or bad micrographs,

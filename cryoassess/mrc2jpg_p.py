@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 '''
 Read the .mrc files, convert (and scale down with FFT) them to smaller .jpg files,
 and save the .jpg files to a "data" folder under the input directory.
