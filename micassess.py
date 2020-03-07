@@ -163,6 +163,7 @@ def predict(**args):
 
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
+
     goodlist = list(sorted(glob.glob(os.path.join('MicAssess', 'jpgs', 'data', '*.jpg')))[i] for i in good_idx)
     badlist = list(sorted(glob.glob(os.path.join('MicAssess', 'jpgs', 'data', '*.jpg')))[i] for i in bad_idx)
 
