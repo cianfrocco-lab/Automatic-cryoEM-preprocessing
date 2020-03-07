@@ -5,9 +5,6 @@ Will predict each image files in the input directory as good or bad micrographs,
 and save to the 'good' and 'bad' folders in the input directory path.
 Will also save a goodlist file (pickle file) for future use.
 
-INPUTS: Input directory of the micrographs in jpg format.
-        Path to the .h5 model file.
-
 To use: python micassess.py -i <input_path> -m <model_path>
 '''
 
@@ -23,7 +20,6 @@ from cryoassess.mrc2jpg_p import mrc2jpg
 import multiprocessing as mp
 import shutil
 import pandas as pd
-
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()
@@ -207,7 +203,6 @@ def input2star(args):
         return
 
     micList = []
-
     import glob
     input = os.path.basename(input)
     micList = glob.glob(input)
@@ -215,8 +210,8 @@ def input2star(args):
     # Get the dirname
     # folder = os.path.dirname(input)
     # newStarFile = os.path.join(folder, "micA_micrographs.star")
-    newStarFile = "micA_micrographs.star"
-    print("Generating star file at %s" % newStarFile)
+    newStarFile = "micrographs.star"
+    print("Generating star file %s" % newStarFile)
     if os.path.exists(newStarFile):
         print("Previous star file found, deleting it.")
         os.remove(newStarFile)
@@ -239,7 +234,5 @@ def main():
     mrc2jpg(**args)
     predict(**args)
 
-
 if __name__ == '__main__':
-
     main()
