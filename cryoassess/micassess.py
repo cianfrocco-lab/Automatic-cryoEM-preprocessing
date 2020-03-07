@@ -210,20 +210,20 @@ def input2star(args):
 
     # if its a single file
     if os.path.isfile(input):
-        micList.append(input)
+        micList.append(os.path.basename(input))
     # Accept a pattern
     else:
         import glob
-        micList = glob.glob(input)
+        micList = [os.path.basename(x) for x in glob.glob(input)]
 
     # Get the dirname
     folder = os.path.dirname(input)
-    newStarFile = os.path.join(folder, "micAssess.star")
+    newStarFile = os.path.join(folder, "micA_micrographs.star")
     print("Generating star file at %s" % newStarFile)
     if os.path.exists(newStarFile):
         print("Previous star file found, deleting it.")
         os.remove(newStarFile)
-    f = open(newStarFile, "a")
+    f = open(newStarFile, "w")
     f.write("data_\n")
     f.write("loop_\n")
     f.write("_rlnMicrographName\n")
