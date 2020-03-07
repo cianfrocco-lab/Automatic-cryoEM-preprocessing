@@ -39,7 +39,7 @@ def setupParserOptions():
     ap.add_argument('-t', '--threshold', type=float, default=0.1,
                     help="Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.")
     ap.add_argument('--threads', type=int, default=None,
-                    help='Number of threads for conversion. Dedault is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
+                    help='Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
     ap.add_argument('--gpus', default='0',
                     help='Specify which gpu(s) to use, e.g. 0,1. Default is 0, which uses only one gpu.')
     args = vars(ap.parse_args())

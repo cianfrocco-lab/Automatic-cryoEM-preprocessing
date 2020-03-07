@@ -5,6 +5,12 @@ Tools to run user-free preprocessing of cryo-EM datasets: https://www.biorxiv.or
 
 MicAssess and 2DAssess are incorporated into the freely available for academic research on COSMIC2 science gateway: https://cosmic2.sdsc.edu:8443/gateway/. Just upload your input files and you can run the jobs on the cloud!
 
+**Updates (3/7/2020, v0.1.0)**
+1. MicAssess now supports micrographs from K3 as well as K2.
+2. pip install now enabled. (Credit to @pconesa)
+3. MicAssess now can take a single mrc file or any valid glob wildcard as the input. (Credit to @pconesa)
+4. MicAssess - now can specify which GPU(s) to use for prediction.
+
 **Installation:**
 
 Both MicAssess and 2DAssess are python based and need anaconda installed to run. Anaconda can be downloaded and installed here: https://www.anaconda.com/distribution/
@@ -32,13 +38,22 @@ You will need the pre-trained model files to run MicAssess and 2DAssess. To down
 
 **MicAssess:**
 
-Note: MicAssess currently only works on K2 camera data.
+Note: MicAssess currently works on micrographs from both K2 and K3 camera.
 You will need to activate the conda environment by ```conda activate cryoassess``` before using MicAssess.
 
 To run MicAssess:
 ```
 micassess -i <a micrograph star file> -m <model file>
 ```
+
+Optional arguments:
+-d, --detector: Either "K2" or "K3". Default is "K2".
+-o, --output: Name of the output star file. Default is good_micrographs.star.
+-b, --batch_size: Batch size used in prediction. Default is 32. Increasing this number will result in faster prediction, if your GPU memory allows. If memory error/warning appears, you should lower this number.
+-t, --threshold: Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.
+--threads: Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number (e.g. 10). This usually happens when you have super-resolution microgarphs from K3.
+--gpus: Specify which GPU(s) to use, e.g. 0,1,2,3. Default is 0, which uses only the first GPU.
+
 The input of MicAssess could be a .star file with a header similar to this:
 ```
 data_
@@ -49,8 +64,7 @@ micrographs/xxxxxxx02.mrc
 ```
 Note that the header must have the "\_rlnMicrographName". The star file must be in the correct relative path so that all the mrc files can be found.
 
-Optionally, input could be a folder where micrographs are, or a pattern where wildcards are accepted 
-(See https://docs.python.org/3.6/library/glob.html for more details)
+Optionally, input could be a folder where micrographs are, or a pattern where wildcards are accepted. (See https://docs.python.org/3.6/library/glob.html for more details)
 
 MicAssess will output a "good_micrographs.star" file in the same directory of the input star file. It will also create a MicAssess directory with all the predictions (converted to .jpg files), in case you want to check the performance.
 
