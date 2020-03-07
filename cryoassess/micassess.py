@@ -132,7 +132,7 @@ def predict(**args):
     model = load_model(args['model'])
     detector = args['detector']
     batch_size = args['batch_size']
-    # input_dir = os.path.abspath(os.path.join(args['input'], os.pardir)) # Directory where the input file is (par dir of input file).
+    input_dir = os.path.abspath(os.path.join(args['input'], os.pardir)) # Directory where the input file is (par dir of input file).
     # os.chdir(input_dir)
     test_data_dir = os.path.join(input_dir, 'MicAssess', 'jpgs') # MicAssess is in the par dir of input file
     model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
