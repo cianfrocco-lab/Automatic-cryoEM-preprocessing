@@ -39,6 +39,7 @@ You will need the pre-trained model files to run MicAssess and 2DAssess. To down
 **MicAssess:**
 
 Note: MicAssess currently works on micrographs from both K2 and K3 camera.
+Note: MicAssess currently does not support star file from Relion 3.1.
 You will need to activate the conda environment by ```conda activate cryoassess``` before using MicAssess.
 
 To run MicAssess:
