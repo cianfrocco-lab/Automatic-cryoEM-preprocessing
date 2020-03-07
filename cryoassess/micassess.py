@@ -233,8 +233,8 @@ def main():
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
     input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
-    os.chdir(input_dir) # navigate to the par dir of input file/dir
     input2star(args)
+    os.chdir(input_dir) # navigate to the par dir of input file/dir
     mrc2jpg(**args)
     predict(**args)
 
