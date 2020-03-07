@@ -11,19 +11,16 @@ from keras.models import *
 from keras.preprocessing.image import ImageDataGenerator
 from keras import metrics
 from keras.optimizers import *
-from keras import backend as keras
 import numpy as np
 import os
 import argparse
 from shutil import copy2
 import shutil
 import glob
-import pickle
 from functools import partial, update_wrapper
 from itertools import product
-from classavg_preprocessing_p import preprocess
-from check_center_p import check_center
-from classavg2jpg_p import save_mrcs
+from emassess.check_center_p import check_center
+from emassess.classavg2jpg_p import save_mrcs
 import re
 
 def setupParserOptions():
@@ -107,10 +104,16 @@ def predict(**args):
     print('Good class averages indices are (starting from 1): ', end='')
     print(', '.join(good_idx))
 
-if __name__ == '__main__':
+def main():
+
     start_dir = os.getcwd()
     args = setupParserOptions()
     args['model'] = os.path.abspath(args['model'])
     os.chdir(start_dir)
     save_mrcs(**args)
     predict(**args)
+
+
+if __name__ == '__main__':
+
+    main()

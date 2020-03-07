@@ -14,23 +14,24 @@ To use: python micassess.py -i <input_path> -m <model_path>
 from keras.models import *
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import *
-from keras import backend as keras
 import numpy as np
 import os
 import argparse
 from shutil import copy2
 import glob
-import pickle
-from mrc2jpg_p import mrc2jpg, star2miclist
+from emassess.mrc2jpg_p import mrc2jpg
 import multiprocessing as mp
 import shutil
 import pandas as pd
-import sys
+
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()
     ap.add_argument('-i', '--input',
-                    help="Input directory of the micrographs in mrc format. Cannot contain other directories inside (excluding directories made by MicAssess).")
+                    help="Input directory, starfile with a list of micrographs or a pattern "
+                         "(<path to a folder>/<pattern>. Pattern could have *, ?, any valid glob wildcard.  "
+                         "All of the micrographs must be in mrc format. Cannot contain other directories inside (excluding directories made by MicAssess).",
+                    required=True)
     ap.add_argument('-d', '--detector', default='K2',
                     help='K2 or K3 detector?')
     ap.add_argument('-m', '--model', default='./models/micassess_051419.h5',
@@ -198,12 +199,50 @@ def predict(**args):
 
     print('All finished!')
 
-if __name__ == '__main__':
+def input2star(args):
+    input = args['input']
+
+    # if a star file
+    if input.endswith('.star'):
+        return
+
+    micList = []
+
+    # if its a single file
+    if os.path.isfile(input):
+        micList.append(input)
+    # Accept a pattern
+    else:
+        import glob
+        micList = glob.glob(input)
+
+    # Get the dirname
+    folder = os.path.dirname(input)
+    newStarFile = os.path.join(folder, "micAssess.star")
+    print("Generating star file at %s" % newStarFile)
+    if os.path.exists(newStarFile):
+        print("Previous star file found, deleting it.")
+        os.remove(newStarFile)
+    f = open(newStarFile, "a")
+    f.write("data_\n")
+    f.write("loop_\n")
+    f.write("_rlnMicrographName\n")
+    f.writelines('\n'.join(micList))
+    f.close()
+
+    args['input'] = newStarFile
+
+def main():
     args = setupParserOptions()
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
     input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
-    os.chdir(input_dir) # navigate to the par dir of input file
+    os.chdir(input_dir) # navigate to the par dir of input file/dir
+    input2star(args)
     mrc2jpg(**args)
-    # os.chdir(start_dir)
     predict(**args)
+
+
+if __name__ == '__main__':
+
+    main()
