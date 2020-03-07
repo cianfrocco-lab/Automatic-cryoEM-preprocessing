@@ -19,8 +19,8 @@ import shutil
 import glob
 from functools import partial, update_wrapper
 from itertools import product
-from emassess.check_center_p import check_center
-from emassess.classavg2jpg_p import save_mrcs
+from cryoassess.check_center_p import check_center
+from cryoassess.classavg2jpg_p import save_mrcs
 import re
 
 def setupParserOptions():
