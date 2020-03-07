@@ -217,8 +217,9 @@ def input2star(args):
         micList = [os.path.basename(x) for x in glob.glob(input)]
 
     # Get the dirname
-    folder = os.path.dirname(input)
-    newStarFile = os.path.join(folder, "micA_micrographs.star")
+    # folder = os.path.dirname(input)
+    # newStarFile = os.path.join(folder, "micA_micrographs.star")
+    newStarFile = "micA_micrographs.star"
     print("Generating star file at %s" % newStarFile)
     if os.path.exists(newStarFile):
         print("Previous star file found, deleting it.")
