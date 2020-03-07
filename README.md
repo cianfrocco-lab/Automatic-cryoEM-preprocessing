@@ -17,13 +17,13 @@ conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 numpy=1.14.
 ```
 conda activate cryoassess
 ```
-3. Install other required packages
+3. Install emassess (this package) for cpu
 ```
-pip install tensorflow==1.10.1 keras==2.2.5 Pillow==4.3.0 mrcfile==1.1.2 pandas==0.25.3 opencv-python==4.1.2.30 scikit-image==0.16.2
+pip install path-to-local-clone[cpu]
 ```
 Alternatively, if using GPU:
 ```
-pip install tensorflow-gpu==1.10.1 keras==2.2.5 Pillow==4.3.0 mrcfile==1.1.2 pandas==0.25.3 opencv-python==4.1.2.30 scikit-image==0.16.2
+pip install path-to-local-clone[gpu]
 ```
 
 **Download .h5 model files:**
@@ -37,9 +37,9 @@ You will need to activate the conda environment by ```conda activate cryoassess`
 
 To run MicAssess:
 ```
-python micassess.py -i <a micrograph star file> -m <model file>
+micassess -i <a micrograph star file> -m <model file>
 ```
-The input of MicAssess should be a .star file with a header similar to this:
+The input of MicAssess could be a .star file with a header similar to this:
 ```
 data_
 loop_
@@ -48,6 +48,10 @@ micrographs/xxxxxxx01.mrc
 micrographs/xxxxxxx02.mrc
 ```
 Note that the header must have the "\_rlnMicrographName". The star file must be in the correct relative path so that all the mrc files can be found.
+
+Optionally, input could be a folder where micrographs are, or a pattern where wildcards are accepted 
+(See https://docs.python.org/3.6/library/glob.html for more details)
+
 MicAssess will output a "good_micrographs.star" file in the same directory of the input star file. It will also create a MicAssess directory with all the predictions (converted to .jpg files), in case you want to check the performance.
 
 Note: if memory warning appears:
@@ -60,7 +64,7 @@ You will need to activate the conda environment by ```conda activate cryoassess`
 
 To run 2DAssess:
 ```
-python 2dassess.py -i <mrcs file outputted by RELION 2D classification> -m <model file>
+2dassess -i <mrcs file outputted by RELION 2D classification> -m <model file>
 ```
 The input of 2DAssess should be an .mrcs file outputted by RELION 2D classification with all the 2D class averages. The name is usually similar to "run_it025_classes.mrcs".
 2DAssess will print the indices of the good class averages after the prediction. It will also output predicted 2D class averages into four different classess in the 2DAssess folder. All the class averages are already converted to .jpg files to ease the manual inspection.
