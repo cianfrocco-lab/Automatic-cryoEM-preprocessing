@@ -81,6 +81,8 @@ Note: if memory warning appears:
 (W tensorflow/core/framework/allocator.cc:108] Allocation of 999571456 exceeds 10% of system memory.)
 Reduce the batch size by adding ‘-b 16’, or even a smaller number (8 or 4). The default batch size is 32. You can also increase the batch size to a higher number like 64, if your memory allows. Higher batch size means faster.
 
+Note: We found in practice, the default threshold (0.1) will cause some empty images being misclassified to the "good" class. Increasing the threshold to 0.3 will help to solve this problem.
+
 **2DAssess:**
 
 You will need to activate the conda environment by ```conda activate cryoassess``` before using 2DAssess.
