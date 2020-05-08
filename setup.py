@@ -164,7 +164,7 @@ setup(
     entry_points={  # Optional
        'console_scripts': [
            'micassess=cryoassess.micassess:main',
-           '2dassess=cryoassess.2dassess:main',
+           '2dassess=cryoassess.assess2d:main',
        ],
     },
 
