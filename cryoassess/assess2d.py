@@ -29,6 +29,8 @@ def setupParserOptions():
                     help="Input mrcs file of 2D class averages.")
     ap.add_argument('-m', '--model', default='./models/2dassess_062119.h5',
                     help='Path to the model.h5 file.')
+    ap.add_argument('-b', '--batch_size', type=int, default=32,
+                    help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('-n', '--name', default='particle',
                     help="Name of the particle. Default is particle.")
     ap.add_argument('-o', '--output', default='2DAssess',
@@ -54,6 +56,7 @@ def w_categorical_crossentropy(y_true, y_pred, weights):
 def predict(**args):
     print('Assessing 2D class averages with 2DAssess....')
     test_data_dir = os.path.abspath(args['output'])
+    batch_size = args['batch_size']
     labels = ['Clip', 'Edge', 'Good', 'Noise']
     os.chdir(test_data_dir)
     for l in labels:
@@ -75,7 +78,7 @@ def predict(**args):
         test_data_dir,
         shuffle=False,
         target_size=(256, 256),
-        batch_size=32,
+        batch_size=batch_size,
         color_mode='grayscale',
         class_mode=None,
         interpolation='lanczos')
