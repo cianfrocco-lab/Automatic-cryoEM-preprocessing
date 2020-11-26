@@ -11,19 +11,16 @@ from keras.models import *
 from keras.preprocessing.image import ImageDataGenerator
 from keras import metrics
 from keras.optimizers import *
-from keras import backend as keras
 import numpy as np
 import os
 import argparse
 from shutil import copy2
 import shutil
 import glob
-import pickle
 from functools import partial, update_wrapper
 from itertools import product
-from classavg_preprocessing_p import preprocess
-from check_center_p import check_center
-from classavg2jpg_p import save_mrcs
+from cryoassess.check_center_p import check_center
+from cryoassess.classavg2jpg_p import save_mrcs
 import re
 
 def setupParserOptions():
@@ -32,6 +29,8 @@ def setupParserOptions():
                     help="Input mrcs file of 2D class averages.")
     ap.add_argument('-m', '--model', default='./models/2dassess_062119.h5',
                     help='Path to the model.h5 file.')
+    ap.add_argument('-b', '--batch_size', type=int, default=32,
+                    help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('-n', '--name', default='particle',
                     help="Name of the particle. Default is particle.")
     ap.add_argument('-o', '--output', default='2DAssess',
@@ -57,6 +56,7 @@ def w_categorical_crossentropy(y_true, y_pred, weights):
 def predict(**args):
     print('Assessing 2D class averages with 2DAssess....')
     test_data_dir = os.path.abspath(args['output'])
+    batch_size = args['batch_size']
     labels = ['Clip', 'Edge', 'Good', 'Noise']
     os.chdir(test_data_dir)
     for l in labels:
@@ -78,7 +78,7 @@ def predict(**args):
         test_data_dir,
         shuffle=False,
         target_size=(256, 256),
-        batch_size=32,
+        batch_size=batch_size,
         color_mode='grayscale',
         class_mode=None,
         interpolation='lanczos')
@@ -107,10 +107,16 @@ def predict(**args):
     print('Good class averages indices are (starting from 1): ', end='')
     print(', '.join(good_idx))
 
-if __name__ == '__main__':
+def main():
+
     start_dir = os.getcwd()
     args = setupParserOptions()
     args['model'] = os.path.abspath(args['model'])
     os.chdir(start_dir)
     save_mrcs(**args)
     predict(**args)
+
+
+if __name__ == '__main__':
+
+    main()
