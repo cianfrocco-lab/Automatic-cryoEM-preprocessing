@@ -12,7 +12,7 @@ from skimage import measure
 import cv2
 import matplotlib.pyplot as plt
 
-def check_center(img_name):
+def checkCenter(img_name):
     img = Image.open(img_name)
     saliency = cv2.saliency.StaticSaliencySpectralResidual_create()
     (success, saliencyMap) = saliency.computeSaliency(np.asarray(img))

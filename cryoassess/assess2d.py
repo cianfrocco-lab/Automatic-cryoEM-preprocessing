@@ -19,9 +19,12 @@ import shutil
 import glob
 from functools import partial, update_wrapper
 from itertools import product
-from cryoassess.check_center_p import check_center
-from cryoassess.classavg2jpg_p import save_mrcs
 import re
+from cryoassess.lib.check_center import checkCenter
+from cryoassess.mrcs2jpg import mrcs2jpg
+from cryoassess.lib import imgprep
+from cryoassess.lib import utils
+
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()
@@ -53,7 +56,7 @@ def w_categorical_crossentropy(y_true, y_pred, weights):
         final_mask += (weights[c_t, c_p] * y_pred_max_mat[:, c_p] * y_true[:, c_t])
     return K.categorical_crossentropy(y_true, y_pred) * final_mask
 
-def predict(**args):
+def predict(args):
     print('Assessing 2D class averages with 2DAssess....')
     test_data_dir = os.path.abspath(args['output'])
     batch_size = args['batch_size']
@@ -90,7 +93,7 @@ def predict(**args):
     i = 0
     for file in sorted(glob.glob('data/*.jpg')):
         if labels[np.argmax(prob[i])] == 'good':
-            if check_center(file) == True:
+            if checkCenter(file) == True:
                 copy2(file, 'Good')
             else:
                 copy2(file, 'Clipping')
@@ -108,15 +111,12 @@ def predict(**args):
     print(', '.join(good_idx))
 
 def main():
-
     start_dir = os.getcwd()
     args = setupParserOptions()
     args['model'] = os.path.abspath(args['model'])
     os.chdir(start_dir)
-    save_mrcs(**args)
-    predict(**args)
-
+    mrcs2jpg(args)
+    predict(args)
 
 if __name__ == '__main__':
-
     main()
