@@ -13,8 +13,8 @@ import numpy as np
 from PIL import Image
 import argparse
 import shutil
-from cryoassess.lib import imgprep
-from cryoassess.lib import utils
+from .lib import imgprep
+from .lib import utils
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()

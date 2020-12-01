@@ -31,7 +31,7 @@ def downsample(img, height=494):
     factor is the downsample factor.
     '''
     m,n = img.shape[-2:]
-    factor = m/height
+    ds_factor = m/height
     # height = round(m/ds_factor/2)*2
     width = round(n/ds_factor/2)*2
     F = np.fft.rfft2(img)

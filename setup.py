@@ -182,8 +182,8 @@ setup(
         'Source': 'https://github.com/cianfrocco-lab/Automatic-cryoEM-preprocessing',
     },
     extras_require = {
-        'gpu':  ['tensorflow-gpu==1.10.1'],
-        'cpu': ['tensorflow==1.10.1']
+        'gpu':  ['tensorflow-gpu==1.14.0'],
+        'cpu': ['tensorflow==1.14.0']
     },
     install_requires=[requirements],
 )

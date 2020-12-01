@@ -14,8 +14,8 @@ import multiprocessing as mp
 import datetime
 import pandas as pd
 import sys
-from cryoassess.lib import imgprep
-from cryoassess.lib import utils
+from .lib import imgprep
+from .lib import utils
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()
@@ -41,7 +41,6 @@ def saveImageK2(mrc_name, height=494):
     try:
         micrograph = mrcReshape(mrc_name)
         new_img = imgprep.scaleImage(micrograph, height)
-
         new_img.save(os.path.join('MicAssess', 'jpgs', 'data', (os.path.basename(mrc_name)[:-4]+'.jpg')))
     except ValueError:
         print('Warning - Having trouble converting this file:', mrc_name)
@@ -67,36 +66,31 @@ def mrc2jpg(args):
     # input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
     # os.chdir(input_dir) # navigate to the par dir of input file
     # os.chdir(os.path.abspath(os.path.dirname(args['input'])) # navigate to the par dir of input file
-    mic_list = utils.star2miclist(os.path.basename(args['input']))
+    mic_list = utils.star2miclist(args['input'])
     try:
         shutil.rmtree('MicAssess')
     except OSError:
         pass
-    os.mkdir('MicAssess')
-    os.mkdir(os.path.join('MicAssess', 'jpgs'))
-    os.mkdir(os.path.join('MicAssess', 'jpgs', 'data'))
+    os.makedirs(os.path.join('MicAssess', 'jpgs', 'data'))
 
     if args['detector'] == 'K3':
-        os.mkdir(os.path.join('MicAssess', 'K3Left'))
-        os.mkdir(os.path.join('MicAssess', 'K3Right'))
-        os.mkdir(os.path.join('MicAssess', 'K3Left', 'data'))
-        os.mkdir(os.path.join('MicAssess', 'K3Right', 'data'))
+        os.makedirs(os.path.join('MicAssess', 'K3Left', 'data'))
+        os.makedirs(os.path.join('MicAssess', 'K3Right', 'data'))
 
     if args['threads'] == None:
         num_threads = mp.cpu_count()
     else:
         num_threads = args['threads']
-    # pool = mp.Pool(mp.cpu_count())
-    # print('CPU count is ', mp.cpu_count())
     pool = mp.Pool(num_threads)
-    print('Thread count is ', num_threads)
+    print('Converting: using %d threads in parallel'%num_threads)
+
     if args['detector'] == 'K2':
         pool.map(saveImageK2, [mrc_name for mrc_name in mic_list])
         pool.close()
     elif args['detector'] == 'K3':
         pool.map(saveImageK3, [mrc_name for mrc_name in mic_list])
         pool.close()
-    print('Conversion finished.')
+    print('Conversion of %d micrographs finished.'%len(mic_list))
 
 if __name__ == '__main__':
     args = setupParserOptions()

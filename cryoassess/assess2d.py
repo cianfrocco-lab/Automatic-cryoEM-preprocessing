@@ -57,7 +57,7 @@ def w_categorical_crossentropy(y_true, y_pred, weights):
     return K.categorical_crossentropy(y_true, y_pred) * final_mask
 
 def predict(args):
-    print('Assessing 2D class averages with 2DAssess....')
+    print('Assessing 2D class averages....')
     test_data_dir = os.path.abspath(args['output'])
     batch_size = args['batch_size']
     labels = ['Clip', 'Edge', 'Good', 'Noise']
@@ -86,7 +86,7 @@ def predict(args):
         class_mode=None,
         interpolation='lanczos')
     prob = model.predict_generator(test_generator)
-    print('Assessment finished. Copying files to corresponding directories....')
+    print('Assessment finished.')
 
     for l in labels:
         os.mkdir(l)
@@ -106,7 +106,7 @@ def predict(args):
     for fname in os.listdir('Good'):
         good_idx.append(re.findall((args['name']+'_'+'(\d+)'), fname[:-4])[0])
 
-    print('All finished! Outputs are stored in', test_data_dir)
+    print('Outputs are stored in', test_data_dir)
     print('Good class averages indices are (starting from 1): ', end='')
     print(', '.join(good_idx))
 

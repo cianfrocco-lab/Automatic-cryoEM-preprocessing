@@ -21,7 +21,7 @@ Both MicAssess and 2DAssess are python based and need anaconda installed to run.
 
 1. Create an anaconda environment
 ```
-conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 numpy=1.15.2 intel-openmp=2019.4
+conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 intel-openmp=2019.4
 ```
 2. Activate this conda environment by
 ```

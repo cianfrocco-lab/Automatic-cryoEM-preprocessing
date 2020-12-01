@@ -10,7 +10,7 @@ import numpy as np
 from scipy import ndimage
 from skimage import measure
 import cv2
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 def checkCenter(img_name):
     img = Image.open(img_name)

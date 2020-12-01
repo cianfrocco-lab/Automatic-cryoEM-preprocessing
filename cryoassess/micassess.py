@@ -55,8 +55,7 @@ def input2star(args):
         return
 
     micList = []
-    import glob
-    input = os.path.basename(input)
+    # input = os.path.basename(input)
     micList = glob.glob(input)
 
     # Get the dirname
@@ -65,7 +64,7 @@ def input2star(args):
     newStarFile = "micrographs.star"
     print("Generating star file %s" % newStarFile)
     if os.path.exists(newStarFile):
-        print("Previous star file found, deleting it.")
+        print("Previous star file found, overwriting.")
         os.remove(newStarFile)
     f = open(newStarFile, "w")
     f.write("data_\n")
@@ -83,8 +82,9 @@ def copyBadFile(file):
     copy2(file, os.path.join('MicAssess','predBad'))
 
 def predict(args):
-    start_dir = os.getcwd()
-    print('Start to assess micrographs with MicAssess.')
+    # start_dir = os.getcwd()
+    # print(start_dir)
+    print('Assessing micrographs....')
     model = load_model(args['model'])
     detector = args['detector']
     batch_size = args['batch_size']
@@ -111,7 +111,7 @@ def predict(args):
         # print('Right: ',prob_right)
         prob = np.maximum(prob_left, prob_right)
 
-    print('Assessment finished. Copying files to good and bad directories....')
+    # print('Assessment finished. Copying files to good and bad directories....')
     # os.chdir(test_data_dir)
     os.mkdir(os.path.join('MicAssess', 'predGood'))
     os.mkdir(os.path.join('MicAssess', 'predBad'))
@@ -140,26 +140,26 @@ def predict(args):
         os.remove(args['output'])
     except OSError:
         pass
-    star_df, micname_key = utils.star2df(os.path.basename(args['input']))
+    star_df = utils.star2df(os.path.basename(args['input']))
+    mic_blockcode = utils.micBlockcode(star_df)
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     badindex = []
-    for i in range(len(star_df)):
-        if os.path.basename(star_df[micname_key].iloc[i])[:-4] not in goodlist_base:
+    for i in range(len(star_df[mic_blockcode][0])):
+        if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in goodlist_base:
             badindex.append(i)
-    new_star_df = star_df.drop(badindex)
-    utils.df2star(new_star_df, args['output'])
-    # with open('goodlist', 'wb') as f:
-    #     pickle.dump(goodlist, f)
+    star_df[mic_blockcode][0].drop(badindex, inplace=True)
+    utils.df2star(star_df, args['output'])
 
-    print('All finished!')
+    print('Assessment finished. The good micrographs are included in the new star file %s.'%args['output'])
+    print('Details of the assessment can be found in the directory "MicAssess".')
 
 
 def main():
     args = setupParserOptions()
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
-    input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
-    os.chdir(input_dir) # navigate to the par dir of input file/dir
+    # input_dir = os.path.abspath(os.path.join(args['input'], os.pardir))
+    # os.chdir(input_dir) # navigate to the par dir of input file/dir
     input2star(args)
     mrc2jpg(args)
     predict(args)
