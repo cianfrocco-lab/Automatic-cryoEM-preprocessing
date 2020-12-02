@@ -7,6 +7,7 @@ MicAssess and 2DAssess are incorporated into the freely available for academic r
 
 **Updates (12/1/2020, v0.2.0)**
 1. MicAssess now supports Relion 3.1 star file as the input.
+2. Fix requirements dependency issues.
 
 **Note (5/8/2020)**
 2DAssess gives syntax error for some users. We have fix the bug and it should be ok to run now.
