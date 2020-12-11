@@ -6,4 +6,3 @@
 
 # Include conf file
  include cryosparc2/protocols.conf
-
