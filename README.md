@@ -5,6 +5,10 @@ Tools to run user-free preprocessing of cryo-EM datasets: https://www.biorxiv.or
 
 MicAssess and 2DAssess are incorporated into the freely available for academic research on COSMIC2 science gateway: https://cosmic2.sdsc.edu:8443/gateway/. Just upload your input files and you can run the jobs on the cloud!
 
+**Updates (12/1/2020, v0.2.0)**
+1. MicAssess now supports Relion 3.1 star file as the input.
+2. Fix requirements dependency issues.
+
 **Note (5/8/2020)**
 2DAssess gives syntax error for some users. We have fix the bug and it should be ok to run now.
 
@@ -21,7 +25,7 @@ Both MicAssess and 2DAssess are python based and need anaconda installed to run.
 
 1. Create an anaconda environment
 ```
-conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 numpy=1.14.5 intel-openmp=2019.4
+conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 intel-openmp=2019.4
 ```
 2. Activate this conda environment by
 ```

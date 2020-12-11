@@ -44,7 +44,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0',  # Required
+    version='0.2.0',  # Required
 
 
     # This is a one-line description or tagline of what your project does. This
@@ -182,8 +182,8 @@ setup(
         'Source': 'https://github.com/cianfrocco-lab/Automatic-cryoEM-preprocessing',
     },
     extras_require = {
-        'gpu':  ['tensorflow-gpu==1.10.1'],
-        'cpu': ['tensorflow==1.10.1']
+        'gpu':  ['tensorflow-gpu==1.14.0'],
+        'cpu': ['tensorflow==1.14.0']
     },
     install_requires=[requirements],
 )
