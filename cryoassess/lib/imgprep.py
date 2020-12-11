@@ -128,6 +128,6 @@ def preprocessClsavg(img):
     Center to 0 and divide by std to normalize.
     And then apply a circular mask to make it rotatable.
     '''
-    norm_img = (img - np.mean(img))/np.std(img)
+    norm_img = (img - np.mean(img))/ (np.std(img) + 1e-7)
     masked_img = maskImg(norm_img)
     return masked_img
