@@ -45,7 +45,7 @@ def scaleImage(img, height=494):
     '''
     Downsample image, scale the pixel value from 0-255 and save it as the Image object.
     '''
-    new_img = downsample(img, height)
+    img = downsample(img, height)
     new_img = ((img-img.min())/((img.max()-img.min())+1e-7)*255).astype('uint8')
     new_img = Image.fromarray(new_img)
     new_img = new_img.convert("L")

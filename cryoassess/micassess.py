@@ -116,6 +116,12 @@ def predict(args):
     os.mkdir(os.path.join('MicAssess', 'predGood'))
     os.mkdir(os.path.join('MicAssess', 'predBad'))
 
+    probsFile = 'probs.tsv'
+    with open(probsFile, 'w') as f:
+        for i in range(len(prob)):
+            micName = sorted(glob.glob(os.path.join('MicAssess', 'jpgs', 'data', '*.jpg')))[i]
+            f.write('{}\t{}\n'.format(micName.split('/')[-1], prob[i][0]))
+
     good_idx = np.where(prob > args['threshold'])[0]
     bad_idx = np.where(prob <= args['threshold'])[0]
 
