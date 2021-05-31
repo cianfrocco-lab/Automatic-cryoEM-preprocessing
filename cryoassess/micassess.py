@@ -203,16 +203,12 @@ def loop_files(labels, args):
     greatlist = []
     for i in range(len(LABEL_LIST)):
         idx = np.where(labels==i)[0]
-        print(idx)
         if idx.size:
             if i == 0:
                 greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
-                print(greatlist)
             if i < 2:
                 goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
-                print(goodlist)
             for j in idx:
-                print(j)
                 file = sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[int(j)]
                 shutil.copy2(file, os.path.join(args['output'], LABEL_LIST[i]))
 
@@ -227,6 +223,8 @@ def write_star(args, goodlist, greatlist):
 
     star_df = star.star2df(args['input'])
     mic_blockcode = star.micBlockcode(star_df)
+
+    print(star_df[mic_blockcode][0]['_rlnMicrographName'])
 
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     omitindex1 = []
