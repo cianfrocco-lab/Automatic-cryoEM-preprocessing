@@ -100,7 +100,7 @@ def input2star(args):
 
 
 
-def predict_one(test_datagen, test_data_dir, base_model, binary_model, fine_good_probs, fine_bad_probs, args):
+def predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args):
 
     test_generator = test_datagen.flow_from_directory(
         test_data_dir,
@@ -113,9 +113,9 @@ def predict_one(test_datagen, test_data_dir, base_model, binary_model, fine_good
 
     features = base_model.predict(test_generator)
 
-    probs = binary_model.predict(features)
-    fine_good_probs = good_model.predict(features)
-    fine_bad_probs = bad_model.predict(features)
+    probs = binary_head.predict(features)
+    fine_good_probs = good_head.predict(features)
+    fine_bad_probs = bad_head.predict(features)
 
     return probs, fine_good_probs, fine_bad_probs
 
@@ -156,14 +156,14 @@ def predict(args):
 
     if detector == 'K2':
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_c)
-        probs, fine_good_probs, fine_bad_prosb = predict_one(test_datagen, test_data_dir, base_model, binary_model, fine_good_probs, fine_bad_probs, args)
+        probs, fine_good_probs, fine_bad_prosb = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
     elif detector == 'K3':
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_l)
-        probs_l, fine_good_probs_l, fine_bad_probs_l = predict_one(test_datagen, test_data_dir, base_model, binary_model, fine_good_probs, fine_bad_probs, args)
+        probs_l, fine_good_probs_l, fine_bad_probs_l = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_r)
-        probs_r, fine_good_probs_r, fine_bad_probs_r = predict_one(test_datagen, test_data_dir, base_model, binary_model, fine_good_probs, fine_bad_probs, args)
+        probs_r, fine_good_probs_r, fine_bad_probs_r = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
         probs = np.maximum(probs_l, probs_r)
         fine_good_probs = np.mean([fine_good_probs_l, fine_good_probs_r], axis=0)
