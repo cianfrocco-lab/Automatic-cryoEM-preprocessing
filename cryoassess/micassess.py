@@ -160,12 +160,10 @@ def predict(args):
 
     elif detector == 'K3':
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_l)
-        print('pred left')
-        probs_l, fine_good_probs_l, fine_bad_probs_l = predict_one(test_datagen, test_data_dir)
+        probs_l, fine_good_probs_l, fine_bad_probs_l = predict_one(test_datagen, test_data_dir, args)
 
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_r)
-        print('pred right')
-        probs_r, fine_good_probs_r, fine_bad_probs_r = predict_one(test_datagen, test_data_dir)
+        probs_r, fine_good_probs_r, fine_bad_probs_r = predict_one(test_datagen, test_data_dir, args)
 
         probs = np.maximum(probs_l, probs_r)
         fine_good_probs = np.mean([fine_good_probs_l, fine_good_probs_r], axis=0)
@@ -257,9 +255,9 @@ def main():
     input2star(args)
     mrc2png.mrc2png(args)
     probs, fine_good_probs, fine_bad_probs = predict(args)
-    # labels = assign_labels(probs, fine_good_probs, fine_bad_probs, args['t1'], args['t2'])
-    # goodlist, greatlist = loop_files(labels, args)
-    # write_star(args, goodlist, greatlist)
+    labels = assign_labels(probs, fine_good_probs, fine_bad_probs, args['t1'], args['t2'])
+    goodlist, greatlist = loop_files(labels, args)
+    write_star(args, goodlist, greatlist)
 
 
 
