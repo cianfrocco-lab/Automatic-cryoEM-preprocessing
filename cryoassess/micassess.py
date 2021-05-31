@@ -203,6 +203,7 @@ def loop_files(labels, args):
     greatlist = []
     for i in range(len(LABEL_LIST)):
         idx = np.where(labels==i)[0]
+        print(idx, i)
         if idx.size:
             if i == 0:
                 greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
@@ -223,6 +224,8 @@ def write_star(args, goodlist, greatlist):
 
     star_df = star.star2df(args['input'])
     mic_blockcode = star.micBlockcode(star_df)
+
+    print(goodlist)
 
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     omitindex1 = []
