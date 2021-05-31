@@ -211,7 +211,7 @@ def loop_files(labels, args):
         for j in idx:
             if j.size:
                 print(j)
-                file = sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[j]
+                file = sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[int(j)]
                 shutil.copy2(file, os.path.join(args['output'], LABEL_LIST[i]))
 
     shutil.rmtree(test_data_dir)
