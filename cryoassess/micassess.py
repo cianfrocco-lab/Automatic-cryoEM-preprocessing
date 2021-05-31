@@ -124,10 +124,10 @@ def predict_one(test_datagen, test_data_dir, args):
 
 def predict(args):
 
-    base_model_path = glob.glob(os.path.join(args['model'], 'base_*'))
-    binary_head_path = glob.glob(os.path.join(args['model'], 'fine_binary_*'))
-    good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))
-    bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))
+    base_model_path = glob.glob(os.path.join(args['model'], 'base_*'))[0]
+    binary_head_path = glob.glob(os.path.join(args['model'], 'fine_binary_*'))[0]
+    good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))[0]
+    bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))[0]
     detector = args['detector']
     test_data_dir = os.path.join(args['output'], 'png')
 

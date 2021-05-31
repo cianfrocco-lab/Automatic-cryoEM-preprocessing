@@ -61,8 +61,9 @@ def mrc2png(args):
     Path(os.path.join(args['output'], 'png', 'data')).mkdir(parents=True, exist_ok=True)
     threads = mp.cpu_count() if args['threads'] is None else args['threads']
     with mp.Pool(threads) as pool:
-        print('Processing in %d parallel threads....' %threads)
+        print('Converting. Processing in %d parallel threads....' %threads)
         pool.starmap(save_image, ((mrc_name, os.path.join(args['output'], 'png', 'data')) for mrc_name in mic_list))
+    print('Conversion finished.')
 
 if __name__ == '__main__':
     args = setupParserOptions()
