@@ -209,7 +209,7 @@ def loop_files(labels, args):
             goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
         for j in idx:
             file = sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[int(j)]
-            shutil.copy2(file, os.path.join(args['output'], label_list[i]))
+            shutil.copy2(file, os.path.join(args['output'], LABEL_LIST[i]))
 
     shutil.rmtree(test_data_dir)
 
