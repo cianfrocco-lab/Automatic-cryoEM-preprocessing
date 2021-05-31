@@ -224,7 +224,8 @@ def write_star(args, goodlist, greatlist):
     star_df = star.star2df(args['input'])
     mic_blockcode = star.micBlockcode(star_df)
 
-    print(star_df[mic_blockcode][0]['_rlnMicrographName'])
+    # print(star_df[mic_blockcode][0]['_rlnMicrographName'])
+    print(goodlist)
 
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     omitindex1 = []
