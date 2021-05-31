@@ -1,94 +1,110 @@
-'''
-Conversion between dataframes and star files in Relion.
-ABOUT star_df:
-    star_df is a dictionary:
-        Keys: blockcodes ('data_xx');
-        Values: lists of pd dataframes:
-            Each element in the value/list corresponds to a "data block", start
-            with "loop_", and converted to a pd dataframe.
-                Each column name of the dataframe is "data name" (e.g. _rlnMicrographName)
-                All data in the dataframe is stored as strings.
-    The commented part started with "#" are deleted during the conversion.
-'''
-
-# import numpy as np
-import pandas as pd
-
-def loop2df(loop):
-    keys_idx = [i for i, x in enumerate(loop) if x.startswith('_')]
-    keys = [loop[i].split('#',1)[0].strip() for i in keys_idx] # remove everything after the first "#" on the keys
-
-    df = loop[keys_idx[-1]+1:]
-    df = [x.split() for x in df]
-    df = pd.DataFrame(df).dropna()
-    df.columns = keys
-
-    return df
-
-def block2df(block):
-    loop_idx = [i for i, x in enumerate(block) if x == 'loop_']
-    loop_idx.append(len(block))
-    loops = [block[loop_idx[i]:loop_idx[i+1]] for i in range(len(loop_idx)-1)]
-
-    df_list = []
-    for loop in loops:
-        df_list.append(loop2df(loop))
-
-    return df_list
+import numpy as np
+from functools import partial, update_wrapper
+from itertools import product
+from tensorflow.keras import backend as K
 
 
-def star2df(starfile):
-    with open(starfile) as f:
-        star =[l for l in (line.strip() for line in f) if l and not l.startswith('#')] # read only non-blank and non "#" lines and rm all '\n' or spaces
-
-    blockcode_idx = [i for i, x in enumerate(star) if x.startswith('data_')]
-    blockcodes = [star[i] for i in blockcode_idx]
-    blockcode_idx.append(len(star))
-    blocks = [star[blockcode_idx[i]:blockcode_idx[i+1]] for i in range(len(blockcode_idx)-1)]
-
-    block_list = []
-    for block in blocks:
-        block_list.append(block2df(block))
-
-    star_df = dict(zip(blockcodes, block_list))
-    return star_df
+def wrapped_partial(func, *args, **kwargs):
+    partial_func = partial(func, *args, **kwargs)
+    update_wrapper(partial_func, func)
+    return partial_func
 
 
-def df2loop(df, file):
-    file.write('loop_ \n')
-
-    keys = df.columns.tolist()
-    for l in keys:
-        file.write(l + ' \n')
-
-    for i in range(len(df)):
-        s = '  '.join(df.iloc[i].tolist())
-        file.write(s + ' \n')
-
-    file.write('\n')
+def w_categorical_crossentropy(y_true, y_pred, weights):
+    nb_cl = len(weights)
+    final_mask = K.zeros_like(y_pred[:, 0])
+    y_pred_max = K.max(y_pred, axis=1)
+    y_pred_max = K.reshape(y_pred_max, (K.shape(y_pred)[0], 1))
+    y_pred_max_mat = K.cast(K.equal(y_pred, y_pred_max), K.floatx())
+    for c_p, c_t in product(range(nb_cl), range(nb_cl)):
+        final_mask += (weights[c_t, c_p] * y_pred_max_mat[:, c_p] * y_true[:, c_t])
+    return K.categorical_crossentropy(y_true, y_pred) * final_mask
 
 
-def df2star(star_df, star_name):
-    blockcodes = list(star_df.keys())
-    block_list = list(star_df.values())
-
-    with open(star_name, 'w') as f:
-        for i in range(len(blockcodes)):
-            f.write(blockcodes[i] + ' \n\n')
-            df_list = block_list[i]
-            for j in range(len(df_list)):
-                df = df_list[j]
-                df2loop(df, f)
+def ncce(w_categorical_crossentropy):
+    w_array = np.ones((4, 4))
+    w_array[(0,1,3), 2] = 1.0
+    w_array[2, (0,1,3)] = 1.0
+    ncce = wrapped_partial(w_categorical_crossentropy, weights=w_array)
+    return ncce
 
 
-def micBlockcode(star_df):
-    if len(list(star_df.keys())) == 1:
-        return list(star_df.keys())[0]
-    else:
-        return 'data_micrographs'
+def crop(img, cropx, cropy, position):
 
-def star2miclist(starfile):
-    star_df = star2df(starfile)
-    mic_blockcode = micBlockcode(star_df)
-    micList = star_df[mic_blockcode][0]['_rlnMicrographName'].tolist()
-    return micList
+    y = img.shape[0]
+    x = img.shape[1]
+
+    if position == 'center':
+        startx = x//2-(cropx//2)
+        starty = y//2-(cropy//2)
+    elif position == 'left':
+        startx = 0
+        starty = y//2-(cropy//2)
+    elif position == 'right':
+        startx = x-cropx
+        starty = y//2-(cropy//2)
+
+    return img[starty:starty+cropy,startx:startx+cropx]
+
+def normalize(x):
+    x /= 127.5
+    x -= 1.
+    return x
+
+
+def create_circular_mask(h, w, center=None, radius=None):
+    if center is None: # use the middle of the image
+        center = [int(w/2), int(h/2)]
+    if radius is None: # use the smallest distance between the center and image walls
+        radius = min(center[0], center[1], w-center[0], h-center[1])
+    Y, X = np.ogrid[:h, :w]
+    dist_from_center = np.sqrt((X - center[0])**2 + (Y-center[1])**2)
+    mask = dist_from_center <= radius
+    return mask
+
+
+def mask_img(temp_img):
+    mask = create_circular_mask(temp_img.shape[0], temp_img.shape[1])
+    masked_img = temp_img.copy()
+    masked_img[~mask] = 0
+    return masked_img
+
+
+def preprocess_c(img):
+    '''
+    Crop the images to make it square.
+    Normalize the image from -1 to 1.
+    And then apply a circular mask to make it rotatable.
+    '''
+    short_edge = min(img.shape[0], img.shape[1])
+    square_img = crop(img, short_edge, short_edge, position='center')
+    norm_img = normalize(square_img)
+    masked_img = mask_img(norm_img)
+
+    return masked_img
+
+def preprocess_l(img):
+    '''
+    Crop the images to make it square.
+    Normalize the image from -1 to 1.
+    And then apply a circular mask to make it rotatable.
+    '''
+    short_edge = min(img.shape[0], img.shape[1])
+    square_img = crop(img, short_edge, short_edge, position='left')
+    norm_img = normalize(square_img)
+    masked_img = mask_img(norm_img)
+
+    return masked_img
+
+def preprocess_r(img):
+    '''
+    Crop the images to make it square.
+    Normalize the image from -1 to 1.
+    And then apply a circular mask to make it rotatable.
+    '''
+    short_edge = min(img.shape[0], img.shape[1])
+    square_img = crop(img, short_edge, short_edge, position='right')
+    norm_img = normalize(square_img)
+    masked_img = mask_img(norm_img)
+
+    return masked_img
