@@ -202,14 +202,16 @@ def loop_files(labels, args):
     goodlist = []
     greatlist = []
     for i in range(len(LABEL_LIST)):
-        idx = np.where(labels==i)
+        idx = np.where(labels==i)[0]
         print(idx)
-        if i == 0:
-            greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
-        if i < 2:
-            goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
-        for j in idx:
-            if j.size:
+        if idx.size:
+            if i == 0:
+                greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
+                print(greatlist)
+            if i < 2:
+                goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
+                print(goodlist)
+            for j in idx:
                 print(j)
                 file = sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[int(j)]
                 shutil.copy2(file, os.path.join(args['output'], LABEL_LIST[i]))
