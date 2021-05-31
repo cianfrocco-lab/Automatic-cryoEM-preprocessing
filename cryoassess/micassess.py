@@ -206,10 +206,10 @@ def loop_files(labels, args):
         print(idx, i)
         if idx.size:
             if i == 0:
-                greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
+                greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[ii] for ii in idx)
                 print(greatlist)
-            if i < 2:
-                goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
+            if i == 1:
+                goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[ii] for ii in idx)
                 print(goodlist)
             for j in idx:
                 file = sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[int(j)]
@@ -227,16 +227,6 @@ def write_star(args, goodlist, greatlist):
     star_df = star.star2df(args['input'])
     mic_blockcode = star.micBlockcode(star_df)
 
-    print(goodlist)
-
-    goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
-    omitindex1 = []
-    for i in range(len(star_df[mic_blockcode][0])):
-        if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in goodlist_base:
-            omitindex1.append(i)
-    star_df[mic_blockcode][0].drop(omitindex1, inplace=True)
-    star.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_good.star'))
-
     greatlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     omitindex2 = []
     for i in range(len(star_df[mic_blockcode][0])):
@@ -244,6 +234,16 @@ def write_star(args, goodlist, greatlist):
             omitindex2.append(i)
     star_df[mic_blockcode][0].drop(omitindex2, inplace=True)
     star.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_great.star'))
+
+    goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
+    omitindex1 = []
+    for i in range(len(star_df[mic_blockcode][0])):
+        if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in goodlist_base:
+            if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in greatlist_base:
+                omitindex1.append(i)
+    star_df[mic_blockcode][0].drop(omitindex1, inplace=True)
+    star.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_good.star'))
+
 
 
 
