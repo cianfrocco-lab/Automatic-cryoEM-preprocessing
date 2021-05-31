@@ -204,9 +204,9 @@ def loop_files(labels, args):
     for i in range(len(LABEL_LIST)):
         idx = np.where(labels==i)
         if i == 0:
-            greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data'))) for ii in idx)
+            greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
         if i < 2:
-            goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data'))) for ii in idx)
+            goodlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
         for j in idx:
             file = sorted(glob.glob(os.path.join(test_data_dir, 'data')))[j]
             shutil.copy2(file, os.path.join(args['output'], label_list[i]))
