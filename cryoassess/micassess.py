@@ -224,16 +224,13 @@ def write_star(args, goodlist, greatlist):
     star_df = star.star2df(args['input'])
     mic_blockcode = star.micBlockcode(star_df)
 
-    # print(star_df[mic_blockcode][0]['_rlnMicrographName'])
-    print(goodlist)
-
     goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     omitindex1 = []
     for i in range(len(star_df[mic_blockcode][0])):
         if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in goodlist_base:
             omitindex1.append(i)
     star_df[mic_blockcode][0].drop(omitindex1, inplace=True)
-    utils.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_good.star'))
+    star.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_good.star'))
 
     greatlist_base = [os.path.basename(f)[:-4] for f in goodlist]
     omitindex2 = []
@@ -241,7 +238,7 @@ def write_star(args, goodlist, greatlist):
         if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in greatlist_base:
             omitindex2.append(i)
     star_df[mic_blockcode][0].drop(omitindex2, inplace=True)
-    utils.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_great.star'))
+    star.df2star(star_df, os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_great.star'))
 
 
 
