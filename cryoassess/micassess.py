@@ -204,6 +204,9 @@ def loop_files(labels, args):
     for i in range(len(LABEL_LIST)):
         idx = np.where(labels==i)
         print(idx)
+        if not idx:
+            print('list empty')
+            continue
         if i == 0:
             greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png'))) for ii in idx)
         if i < 2:
