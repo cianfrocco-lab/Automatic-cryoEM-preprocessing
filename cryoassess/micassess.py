@@ -214,7 +214,7 @@ def loop_files(labels, args):
 
     shutil.rmtree(test_data_dir)
 
-    return goodlist, greatlist
+    return goodlist[0], greatlist[0]
 
 
 
