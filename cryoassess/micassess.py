@@ -185,7 +185,7 @@ def assign_label(prob, fine_good_prob, fine_bad_prob, threshold_1, threshold_2):
 
 
 def assign_labels(probs, fine_good_probs, fine_bad_probs, threshold_1, threshold_2):
-    labels = np.full(shape=prob.shape[0], fill_value=99)
+    labels = np.full(shape=probs.shape[0], fill_value=99)
     for i in range(probs.shape[0]):
         labels[i] = assign_label(probs[i], fine_good_probs[i], fine_bad_probs[i], threshold_1, threshold_2)
     return labels
