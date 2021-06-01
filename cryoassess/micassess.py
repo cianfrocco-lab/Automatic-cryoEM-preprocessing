@@ -228,7 +228,7 @@ def write_star(args, goodlist, greatlist):
 def report(labels, greatlist, goodlist):
     print('Total micrographs: ', len(labels))
     for i in range(len(LABEL_LIST)):
-        print(LABEL_LIST[i], ':\t %d micrographs \n', %(len(np.where(labels==i)[0])))
+        print(LABEL_LIST[i], ':\t %d micrographs \n' %(len(np.where(labels==i)[0])))
 
     perc_great = "{:.2f}".format(100 * len(greatlist) / len(labels))
     perc_good = "{:.2f}".format(100 * len(goodlist) / len(labels))
