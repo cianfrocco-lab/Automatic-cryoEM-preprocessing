@@ -49,6 +49,7 @@ def crop(img, cropx, cropy, position):
 def normalize(x):
     x /= 127.5
     x -= 1.
+    # x = (x - np.mean(x)) / np.std(x)    
     return x
 
 
@@ -84,11 +85,7 @@ def preprocess_c(img):
     return masked_img
 
 def preprocess_l(img):
-    '''
-    Crop the images to make it square.
-    Normalize the image from -1 to 1.
-    And then apply a circular mask to make it rotatable.
-    '''
+
     short_edge = min(img.shape[0], img.shape[1])
     square_img = crop(img, short_edge, short_edge, position='left')
     norm_img = normalize(square_img)
@@ -97,11 +94,7 @@ def preprocess_l(img):
     return masked_img
 
 def preprocess_r(img):
-    '''
-    Crop the images to make it square.
-    Normalize the image from -1 to 1.
-    And then apply a circular mask to make it rotatable.
-    '''
+
     short_edge = min(img.shape[0], img.shape[1])
     square_img = crop(img, short_edge, short_edge, position='right')
     norm_img = normalize(square_img)
