@@ -225,12 +225,15 @@ def write_star(args, goodlist, greatlist):
         print('No "good" micrographs found.')
 
 
-def report(labels):
+def report(labels, greatlist, goodlist):
     print('Total micrographs: ', len(labels))
     for i in range(len(LABEL_LIST)):
         print(LABEL_LIST[i], ':\t %d micrographs \n', %(len(np.where(labels==i)[0])))
-    print('%f\% of the micrographs are great and were written in the _great.star file.' %(len(np.where(labels==i)[0]) / len(labels)))
-    print('%f\% of the micrographs are good and were written in the _good.star file.' %(len(np.where(labels==i)[0]) / len(labels)))
+
+    perc_great = "{:.2f}".format(100 * len(greatlist) / len(labels))
+    perc_good = "{:.2f}".format(100 * len(goodlist) / len(labels))
+    print('%f%% of the micrographs are great and were written in the _great.star file.' %(perc_great))
+    print('%f%% of the micrographs are good and were written in the _good.star file.' %(perc_good))
 
 
 
