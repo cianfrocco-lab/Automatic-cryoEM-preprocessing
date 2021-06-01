@@ -254,6 +254,7 @@ def main():
     labels = assign_labels(probs, fine_good_probs, fine_bad_probs, args['t1'], args['t2'])
     goodlist, greatlist = loop_files(labels, args)
     write_star(args, goodlist, greatlist)
+    report(labels, greatlist, goodlist)
 
 
 
