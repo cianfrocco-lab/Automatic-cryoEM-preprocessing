@@ -36,14 +36,12 @@ def setupParserOptions():
     ap.add_argument('-o', '--output', default='MicAssess', help="Name of the output directory. Default is MicAssess.")
     ap.add_argument('-b', '--batch_size', type=int, default=32,
                     help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
-    ap.add_argument('--t1', type=float, default=0.2,
+    ap.add_argument('--t1', type=float, default=0.1,
                     help="Threshold for good/bad classification. Default is 0.2. Higher number will cause more good micrographs (including great and good) being classified as bad.")
     ap.add_argument('--t2', type=float, default=0.5,
                     help="Threshold for great/good classification. Default is 0.5. Higher number will cause more great micrographs being classified as good.")
     ap.add_argument('--threads', type=int, default=None,
                     help='Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
-    ap.add_argument('--not_reset', default=False, action='store_true',
-                    help='Do not reset and clear the existing job (if any). Turning this off will skip the converting to png if the output directory already exists.')
     ap.add_argument('--gpus', default='0', help='Specify which gpu(s) to use, e.g. 0,1. Default is 0, which uses only one gpu.')
     args = vars(ap.parse_args())
     return args
@@ -147,7 +145,7 @@ def predict(args):
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_r)
         probs_r, fine_good_probs_r, fine_bad_probs_r = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
-        probs = np.maximum(probs_l, probs_r)
+        probs = np.minimum(probs_l, probs_r)
         fine_good_probs = np.mean([fine_good_probs_l, fine_good_probs_r], axis=0)
         fine_bad_probs = np.mean([fine_bad_probs_l, fine_bad_probs_r], axis=0)
 
@@ -244,11 +242,7 @@ def main():
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
 
-    if not args['not_reset']:
-        print('Resetting....')
-        reset()
-        print('Done')
-
+    reset()
     input2star(args)
     mrc2png.mrc2png(args)
     probs, fine_good_probs, fine_bad_probs = predict(args)
