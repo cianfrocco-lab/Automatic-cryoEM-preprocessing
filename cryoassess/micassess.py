@@ -138,7 +138,7 @@ def predict(args):
 
     if detector == 'K2':
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_c)
-        probs, fine_good_probs, fine_bad_prosb = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
+        probs, fine_good_probs, fine_bad_probs = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
     elif detector == 'K3':
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_l)
