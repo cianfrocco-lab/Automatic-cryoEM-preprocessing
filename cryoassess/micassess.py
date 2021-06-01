@@ -155,7 +155,7 @@ def predict(args):
 
 
 def assign_label(prob, fine_good_prob, fine_bad_prob, threshold_1, threshold_2):
-    if prob[0] <= threshold_1: # meaning this is a good mic
+    if prob[0] >= threshold_1: # meaning this is a good mic
         if fine_good_prob[0] > threshold_2:
             label = 0 # 0Great
         else:

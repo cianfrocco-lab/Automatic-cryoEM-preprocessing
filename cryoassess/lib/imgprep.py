@@ -3,7 +3,7 @@ Helper functions for simple image preprocessing used.
 '''
 import numpy as np
 from PIL import Image
-from scipy import ndimage
+# from scipy import ndimage
 import pandas as pd
 # from PIL import ImageOps
 
