@@ -21,19 +21,7 @@ from lib import utils, fft, star, mrc2png
 
 
 IMG_DIM = 494
-# BATCH_SIZE = 32
-# threshold_1 = 0.5
-# threshold_2 = 0.5
-
 LABEL_LIST = ['0Great', '1Good', '2Contamination_Aggregate_Crack_Breaking_drifting', '3Empty_no_ice', '4Crystalline_ice', '5Empty_ice_no_particles_but_vitreous_ice']
-
-# test_data_dir = '/lsi/groups/mcianfroccolab/yilai/MicAssess_v1.0_test/MicAssess/png'
-
-# base_model_path = '/lsi/groups/mcianfroccolab/yilai/codes/cryoassess-train/models/base_resnext50_05212021_lr1e-3_b32.h5'
-# binary_head_path = '/lsi/groups/mcianfroccolab/yilai/codes/cryoassess-train/models/fine_binary_resnext50_ps_head_05252021_lr5e-6_b32.h5'
-# good_head_path = '/lsi/groups/mcianfroccolab/yilai/codes/cryoassess-train/models/fine_good_resnext50_ps_head_05252021_lr1e-6_b16.h5'
-# bad_head_path = '/lsi/groups/mcianfroccolab/yilai/codes/cryoassess-train/models/fine_bad_resnext50_ps_head_05252021_lr5e-6_b16.h5'
-
 
 
 def setupParserOptions():
@@ -61,13 +49,11 @@ def setupParserOptions():
     return args
 
 
-
 def reset():
     try:
         shutil.rmtree('MicAssess')
     except OSError:
         pass
-
 
 
 def input2star(args):
@@ -98,8 +84,6 @@ def input2star(args):
     args['input'] = newStarFile
 
 
-
-
 def predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args):
 
     test_generator = test_datagen.flow_from_directory(
@@ -118,8 +102,6 @@ def predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head,
     fine_bad_probs = bad_head.predict(features)
 
     return probs, fine_good_probs, fine_bad_probs
-
-
 
 
 def predict(args):
@@ -172,7 +154,6 @@ def predict(args):
     return probs, fine_good_probs, fine_bad_probs
 
 
-
 def assign_label(prob, fine_good_prob, fine_bad_prob, threshold_1, threshold_2):
     if prob[0] <= threshold_1: # meaning this is a good mic
         if fine_good_prob[0] > threshold_2:
@@ -191,8 +172,6 @@ def assign_labels(probs, fine_good_probs, fine_bad_probs, threshold_1, threshold
     return labels
 
 
-
-
 def loop_files(labels, args):
 
     test_data_dir = os.path.join(args['output'], 'png')
@@ -203,7 +182,6 @@ def loop_files(labels, args):
     greatlist = []
     for i in range(len(LABEL_LIST)):
         idx = np.where(labels==i)[0]
-        print(idx, i)
         if idx.size:
             if i == 0:
                 greatlist = list(sorted(glob.glob(os.path.join(test_data_dir, 'data', '*.png')))[ii] for ii in idx)
@@ -217,8 +195,6 @@ def loop_files(labels, args):
     shutil.rmtree(test_data_dir)
 
     return goodlist, greatlist
-
-
 
 
 def write_star(args, goodlist, greatlist):
@@ -249,7 +225,12 @@ def write_star(args, goodlist, greatlist):
         print('No "good" micrographs found.')
 
 
-
+def report(labels):
+    print('Total micrographs: ', len(labels))
+    for i in range(len(LABEL_LIST)):
+        print(LABEL_LIST[i], ':\t %d micrographs \n', %(len(np.where(labels==i)[0])))
+    print('%f\% of the micrographs are great and were written in the _great.star file.' %(len(np.where(labels==i)[0]) / len(labels)))
+    print('%f\% of the micrographs are good and were written in the _good.star file.' %(len(np.where(labels==i)[0]) / len(labels)))
 
 
 
