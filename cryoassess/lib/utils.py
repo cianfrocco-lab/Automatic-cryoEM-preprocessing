@@ -47,9 +47,9 @@ def crop(img, cropx, cropy, position):
     return img[starty:starty+cropy,startx:startx+cropx]
 
 def normalize(x):
-    x /= 127.5
-    x -= 1.
-    # x = (x - np.mean(x)) / np.std(x)    
+    # x /= 127.5
+    # x -= 1.
+    x = (x - np.mean(x)) / np.std(x)    
     return x
 
 

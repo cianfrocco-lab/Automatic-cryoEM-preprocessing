@@ -37,7 +37,7 @@ def setupParserOptions():
     ap.add_argument('-b', '--batch_size', type=int, default=32,
                     help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('--t1', type=float, default=0.1,
-                    help="Threshold for good/bad classification. Default is 0.2. Higher number will cause more good micrographs (including great and good) being classified as bad.")
+                    help="Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad.")
     ap.add_argument('--t2', type=float, default=0.5,
                     help="Threshold for great/good classification. Default is 0.5. Higher number will cause more great micrographs being classified as good.")
     ap.add_argument('--threads', type=int, default=None,
