@@ -38,8 +38,8 @@ def setupParserOptions():
                     help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('--t1', type=float, default=0.1,
                     help="Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad. On the other hand, if you find good micrographs misclassified as bad, try to lower this number.")
-    ap.add_argument('--t2', type=float, default=0.5,
-                    help="Threshold for great/good classification. Default is 0.5. Higher number will cause more great micrographs being classified as good.")
+    ap.add_argument('--t2', type=float, default=0.1,
+                    help="Threshold for great/good classification. Default is 0.1. Higher number will cause more great micrographs being classified as good.")
     ap.add_argument('--threads', type=int, default=None,
                     help='Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
     ap.add_argument('--gpus', default='0', help='Specify which gpu(s) to use, e.g. 0,1. Default is 0, which uses only one gpu.')
