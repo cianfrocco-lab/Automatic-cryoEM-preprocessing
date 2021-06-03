@@ -24,7 +24,7 @@ The last four labels are all considered as "bad". We hope that MicAssess can not
 
 The prediction uses a hierarchical classification model. For a new micrograph, the model will first decide whether this is a "good" or "bad" micrograph (validation accuracy ~93%). The tolerance threshold in this step can be tuned by the user with `--t1`. If the micrograph is classified as "good", the model will further classify whether it belong to the "great" class or "decent" class (validation accuracy ~75%). The tolerance threshold in this step can be tuned by the user with `--t2`. If the micrograph is "bad", the model will further classify which "bad" class it belongs to (validation accuracy ~80%).
 
-MicAssess v1.0 uses tensorflow 2.5.0 which requires CUDA 11.2. It also needs new model files, which consist of 4 different .h5 files. Model files can be downloaded per request on https://cosmic-cryoem.org/software/cryo-assess/. For current users, we will just update the files in the shared folder.
+MicAssess v1.0 needs new model files, which consist of 4 different .h5 files. Model files can be downloaded per request on https://cosmic-cryoem.org/software/cryo-assess/. For current users, we will just update the files in the shared folder.
 
 Note on 2DAssess: since Relion 4.0 will have its own 2D classification auto-selection tool, we do not plan to update 2DAssess in the future.
 
