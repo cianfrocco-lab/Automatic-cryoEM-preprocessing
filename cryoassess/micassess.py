@@ -17,11 +17,11 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.models import *
 from tensorflow.keras.layers import *
 
-from lib import utils, fft, star, mrc2png
+from cryoassess.lib import utils, fft, star, mrc2png
 
 
 IMG_DIM = 494
-LABEL_LIST = ['0Great', '1Good', '2Contamination_Aggregate_Crack_Breaking_drifting', '3Empty_no_ice', '4Crystalline_ice', '5Empty_ice_no_particles_but_vitreous_ice']
+LABEL_LIST = ['0Great', '1Decent', '2Contamination_Aggregate_Crack_Breaking_Drifting', '3Empty_no_ice', '4Crystalline_ice', '5Empty_ice_no_particles_but_vitreous_ice']
 
 
 def setupParserOptions():
@@ -37,7 +37,7 @@ def setupParserOptions():
     ap.add_argument('-b', '--batch_size', type=int, default=32,
                     help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")
     ap.add_argument('--t1', type=float, default=0.1,
-                    help="Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad.")
+                    help="Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad. On the other hand, if you find good micrographs misclassified as bad, try to lower this number.")
     ap.add_argument('--t2', type=float, default=0.5,
                     help="Threshold for great/good classification. Default is 0.5. Higher number will cause more great micrographs being classified as good.")
     ap.add_argument('--threads', type=int, default=None,
@@ -251,10 +251,6 @@ def main():
     goodlist, greatlist = loop_files(labels, args)
     write_star(args, goodlist, greatlist)
     report(labels, greatlist, goodlist)
-
-
-
-
 
 
 

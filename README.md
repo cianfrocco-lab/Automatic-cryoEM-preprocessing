@@ -5,13 +5,40 @@ Tools to run user-free preprocessing of cryo-EM datasets: https://www.biorxiv.or
 
 MicAssess and 2DAssess are incorporated into the freely available for academic research on COSMIC2 science gateway: https://cosmic2.sdsc.edu:8443/gateway/. Just upload your input files and you can run the jobs on the cloud!
 
+**Updates (v1.0.0)**
+We have updated cryoassess package to 1.0! MicAssess has a big update whereas 2DAssess is unchanged.
+
+The major change of MicAssess is that it now predicts 6 labels instead of 2. The 6 labels are:
+  1. Great
+  2. Decent
+  3. Contamination, Aggregate, Crack, Breaking, Drifting
+  4. Empty (no ice)
+  5. Crystalline ice
+  6. Empty ice, no particles but vitreous ice
+
+You can find some exemplar images of these 6 labels in the "Examples" folder.
+
+The first two labels are both considered as "good" and will be outputted in a "micrographs_good.star" file. The micrographs in the first "great" label will also be written into a "micrographs_great.star" file. We hope that the "great" label can be helpful to select the most promising micrographs from a big dataset.
+
+The last four labels are all considered as "bad". We hope that MicAssess can not only help with micrographs curation, but also gives the user some information about why this is a "bad" micrograph.
+
+The prediction uses a hierarchical classification model. For a new micrograph, the model will first decide whether this is a "good" or "bad" micrograph (validation accuracy ~93%). The tolerance threshold in this step can be tuned by the user with `--t1`. If the micrograph is classified as "good", the model will further classify whether it belong to the "great" class or "decent" class (validation accuracy ~75%). The tolerance threshold in this step can be tuned by the user with `--t2`. If the micrograph is "bad", the model will further classify which "bad" class it belongs to (validation accuracy ~80%).
+
+MicAssess v1.0 uses tensorflow 2.5.0 which requires CUDA 11.2. It also needs new model files, which consist of 4 different .h5 files. Model files can be downloaded per request on https://cosmic-cryoem.org/software/cryo-assess/. For current users, we will just update the files in the shared folder.
+
+Note on 2DAssess: since Relion 4.0 will have its own 2D classification auto-selection tool, we do not plan to update 2DAssess in the future.
+
+**Updates (v0.2.1)**
+Credit to @DaniDelHoyo
+1. Fixed a bug that caused the malfunction of the prediction results.
+2. Now creates a score file as the output that can be used for threshold selection.
+
 **Updates (12/1/2020, v0.2.0)**
 1. MicAssess now supports Relion 3.1 star file as the input.
 2. Fix requirements dependency issues.
 
 **Note (5/8/2020)**
 2DAssess gives syntax error for some users. We have fix the bug and it should be ok to run now.
-
 
 **Updates (3/7/2020, v0.1.0)**
 1. MicAssess now supports micrographs from K3 as well as K2.
@@ -25,7 +52,7 @@ Both MicAssess and 2DAssess are python based and need anaconda installed to run.
 
 1. Create an anaconda environment
 ```
-conda create -n cryoassess -c anaconda python=3.6 pyqt=5 cudnn=7.1.2 intel-openmp=2019.4
+conda create -n cryoassess -c anaconda python=3.7 pyqt=5 cudnn=7.1.2 intel-openmp=2019.4
 ```
 2. Activate this conda environment by
 ```
@@ -33,11 +60,11 @@ conda activate cryoassess
 ```
 3. Install cryoassess (this package) for cpu
 ```
-pip install path-to-local-clone[cpu]
+pip install path-to-local-clone
 ```
 Alternatively, if using GPU:
 ```
-pip install path-to-local-clone[gpu]
+pip install path-to-local-clone
 ```
 
 **Download .h5 model files:**
