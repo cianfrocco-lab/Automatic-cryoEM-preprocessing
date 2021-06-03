@@ -50,9 +50,14 @@ Credit to @DaniDelHoyo
 
 Both MicAssess and 2DAssess are python based and need anaconda installed to run. Anaconda can be downloaded and installed here: https://www.anaconda.com/distribution/
 
+0. If you have an existing cryoassess conda environment from the previous version, you will need to remove it by
+```
+conda env remove --name cryoassess
+```
+
 1. Create an anaconda environment
 ```
-conda create -n cryoassess -c anaconda python=3.7 pyqt=5 cudnn=7.1.2 intel-openmp=2019.4
+conda create -n cryoassess -c anaconda python=3.7 cudnn=7.6.5
 ```
 2. Activate this conda environment by
 ```
