@@ -55,6 +55,12 @@ def reset():
     except OSError:
         pass
 
+def dont_reset():
+    try:
+        for name in LABEL_LIST:
+            shutil.rmtree(os.path.join('MicAssess', name))
+    except OSError:
+        pass
 
 def input2star(args):
     input = args['input']
@@ -202,6 +208,12 @@ def write_star(args, goodlist, greatlist):
     star_df = star.star2df(args['input'])
     mic_blockcode = star.micBlockcode(star_df)
 
+    try:
+        os.remove(os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_great.star'))
+        os.remove(os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_good.star'))
+    except OSError:
+        pass
+
     if greatlist:
         greatlist_base = [os.path.basename(f)[:-4] for f in goodlist]
         omitindex2 = []
@@ -249,6 +261,7 @@ def main():
         input2star(args)
         mrc2png.mrc2png(args)
     else:
+        dont_reset()
         print('Skipping the conversion step.')
 
     probs, fine_good_probs, fine_bad_probs = predict(args)
