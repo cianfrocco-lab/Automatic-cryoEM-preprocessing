@@ -219,7 +219,7 @@ def write_star(args, goodlist, greatlist):
         pass
 
     if greatlist:
-        greatlist_base = [os.path.basename(f)[:-4] for f in goodlist]
+        greatlist_base = [os.path.basename(f)[:-4] for f in greatlist]
         omitindex2 = []
         for i in range(len(star_df[mic_blockcode][0])):
             if os.path.basename(star_df[mic_blockcode][0]['_rlnMicrographName'].iloc[i])[:-4] not in greatlist_base:
