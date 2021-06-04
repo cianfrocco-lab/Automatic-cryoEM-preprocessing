@@ -157,11 +157,17 @@ def predict(args):
         fine_good_probs = np.mean([fine_good_probs_l, fine_good_probs_r], axis=0)
         fine_bad_probs = np.mean([fine_bad_probs_l, fine_bad_probs_r], axis=0)
 
-    probsFile = 'probs.tsv'
-    with open(probsFile, 'w') as f:
-        for i in range(len(prob)):
+    probsFile_1 = 'probs_good.tsv'
+    with open(probsFile_1, 'w') as f:
+        for i in range(len(probs)):
             micName = sorted(glob.glob(os.path.join(args['output'], 'png', 'data', '*.png')))[i]
-            f.write('{}\t{}\n'.format(micName.split('/')[-1], (1 - prob[i][0])))
+            f.write('{}\t{}\n'.format(micName.split('/')[-1], (1 - probs[i][0])))
+
+    probsFile_2 = 'probs_great.tsv'
+    with open(probsFile_2, 'w') as f:
+        for i in range(len(fine_good_probs)):
+            micName = sorted(glob.glob(os.path.join(args['output'], 'png', 'data', '*.png')))[i]
+            f.write('{}\t{}\n'.format(micName.split('/')[-1], (1 - fine_good_probs[i][0])))
 
     return probs, fine_good_probs, fine_bad_probs
 
