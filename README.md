@@ -80,26 +80,26 @@ You will need to activate the conda environment by ```conda activate cryoassess`
 
 To run MicAssess:
 ```
-micassess -i <a micrograph star file, or any valid glob wildcard for mrc files> -m <model file>
+micassess -i <a micrograph star file, or any valid glob wildcard for mrc files> -m <model directory>
 ```
 
 Optional arguments:
 
--d, --detector: Either "K2" or "K3". Default is "K2".
+`-d`, `--detector`: Either "K2" or "K3". Default is "K2".
 
--o, --output: Name of the output directory. Default is MicAssess.
+`-o`, `--output`: Name of the output directory. Default is MicAssess.
 
--b, --batch_size: Batch size used in prediction. Default is 32. Increasing this number will result in faster prediction, if your GPU memory allows. If memory error/warning appears, you should lower this number.
+`-b`, `--batch_size`: Batch size used in prediction. Default is 32. Increasing this number will result in faster prediction, if your GPU memory allows. If memory error/warning appears, you should lower this number.
 
---t1: Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad. On the other hand, if you find good micrographs misclassified as bad, try to lower this number.
+`--t1`: Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad. On the other hand, if you find good micrographs misclassified as bad, try to lower this number.
 
---t2: Threshold for great/decent classification. Default is 0.1. Higher number will cause more great micrographs being classified as good.
+`--t2`: Threshold for great/decent classification. Default is 0.1. Higher number will cause more great micrographs being classified as good.
 
---threads: Number of threads for conversion. Default is None, using the maximum allowed. If get memory errors, please set it to a reasonable number (e.g. 10). This usually happens when you have super-resolution micrographs from K3.
+`--threads`: Number of threads for conversion. Default is None, using the maximum allowed. If get memory errors, please set it to a reasonable number (e.g. 10). This usually happens when you have super-resolution micrographs from K3.
 
---gpus: Specify which GPU(s) to use, e.g. 0,1,2,3. Default is 0, which uses only the first GPU.
+`--gpus`: Specify which GPU(s) to use, e.g. 0,1,2,3. Default is 0, which uses only the first GPU.
 
---dont_reset: MicAssess will first convert the mrc files to png format before prediction. Depending on your CPU threads and the number of micrographs, this step may be time-consuming. If you already have the mrc files converted (to png) with a previous run of MicAssess, you can skip the conversion step by using this flag.
+`--dont_reset`: By default, MicAssess will first convert the mrc files to png format before prediction. Depending on your CPU threads and the number of micrographs, this step may be time-consuming. If you already have the mrc files converted (to png) with a previous run of MicAssess, you can skip the conversion step by using this flag.
 
 The input of MicAssess could be a .star file with a header similar to this:
 ```
