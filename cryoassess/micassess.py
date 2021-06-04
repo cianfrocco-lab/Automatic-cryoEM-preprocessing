@@ -39,7 +39,7 @@ def setupParserOptions():
     ap.add_argument('--t1', type=float, default=0.1,
                     help="Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad. On the other hand, if you find good micrographs misclassified as bad, try to lower this number.")
     ap.add_argument('--t2', type=float, default=0.1,
-                    help="Threshold for great/good classification. Default is 0.1. Higher number will cause more great micrographs being classified as good.")
+                    help="Threshold for great/decent classification. Default is 0.1. Higher number will cause more great micrographs being classified as good.")
     ap.add_argument('--threads', type=int, default=None,
                     help='Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
     ap.add_argument('--gpus', default='0', help='Specify which gpu(s) to use, e.g. 0,1. Default is 0, which uses only one gpu.')
@@ -230,7 +230,7 @@ def write_star(args, goodlist, greatlist):
 
     if goodlist:
         star_df = star.star2df(args['input'])
-        mic_blockcode = star.micBlockcode(star_df)    
+        mic_blockcode = star.micBlockcode(star_df)
         goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
         omitindex1 = []
         for i in range(len(star_df[mic_blockcode][0])):

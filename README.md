@@ -24,7 +24,7 @@ The last four labels are all considered as "bad". We hope that MicAssess can not
 
 The prediction uses a hierarchical classification model. For a new micrograph, the model will first decide whether this is a "good" or "bad" micrograph (validation accuracy ~93%). The tolerance threshold in this step can be tuned by the user with `--t1`. If the micrograph is classified as "good", the model will further classify whether it belong to the "great" class or "decent" class (validation accuracy ~75%). The tolerance threshold in this step can be tuned by the user with `--t2`. If the micrograph is "bad", the model will further classify which "bad" class it belongs to (validation accuracy ~80%).
 
-MicAssess v1.0 needs new model files, which consist of 4 different .h5 files. Model files can be downloaded per request on https://cosmic-cryoem.org/software/cryo-assess/. For current users, we will just update the files in the shared folder.
+MicAssess v1.0 needs new model files, which consist of 4 different .h5 files. Model files can be downloaded per request on https://cosmic-cryoem.org/software/cryo-assess/. For current users, we will just update the files in the shared folder. Please do not change the file names of the models.
 
 Note on 2DAssess: since Relion 4.0 will have its own 2D classification auto-selection tool, we do not plan to update 2DAssess in the future.
 
@@ -63,11 +63,7 @@ conda create -n cryoassess -c anaconda python=3.7 cudnn=7.6.5
 ```
 conda activate cryoassess
 ```
-3. Install cryoassess (this package) for cpu
-```
-pip install path-to-local-clone
-```
-Alternatively, if using GPU:
+3. Install cryoassess (this package)
 ```
 pip install path-to-local-clone
 ```
@@ -80,28 +76,30 @@ You will need the pre-trained model files to run MicAssess and 2DAssess. To down
 
 Note: MicAssess currently works on micrographs from both K2 and K3 camera.
 
-Note: MicAssess currently does not support star file from Relion 3.1.
-
 You will need to activate the conda environment by ```conda activate cryoassess``` before using MicAssess.
 
 To run MicAssess:
 ```
-micassess -i <a micrograph star file> -m <model file>
+micassess -i <a micrograph star file, or any valid glob wildcard for mrc files> -m <model file>
 ```
 
 Optional arguments:
 
 -d, --detector: Either "K2" or "K3". Default is "K2".
 
--o, --output: Name of the output star file. Default is good_micrographs.star.
+-o, --output: Name of the output directory. Default is MicAssess.
 
 -b, --batch_size: Batch size used in prediction. Default is 32. Increasing this number will result in faster prediction, if your GPU memory allows. If memory error/warning appears, you should lower this number.
 
--t, --threshold: Threshold for classification. Default is 0.1. Higher number will cause more good micrographs being classified as bad.
+--t1: Threshold for good/bad classification. Default is 0.1. Higher number will cause more good micrographs (including great and good) being classified as bad. On the other hand, if you find good micrographs misclassified as bad, try to lower this number.
 
---threads: Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number (e.g. 10). This usually happens when you have super-resolution microgarphs from K3.
+--t2: Threshold for great/decent classification. Default is 0.1. Higher number will cause more great micrographs being classified as good.
+
+--threads: Number of threads for conversion. Default is None, using the maximum allowed. If get memory errors, please set it to a reasonable number (e.g. 10). This usually happens when you have super-resolution micrographs from K3.
 
 --gpus: Specify which GPU(s) to use, e.g. 0,1,2,3. Default is 0, which uses only the first GPU.
+
+--dont_reset: MicAssess will first convert the mrc files to png format before prediction. Depending on your CPU threads and the number of micrographs, this step may be time-consuming. If you already have the mrc files converted (to png) with a previous run of MicAssess, you can skip the conversion step by using this flag.
 
 The input of MicAssess could be a .star file with a header similar to this:
 ```
@@ -115,15 +113,15 @@ Note that the header must have the "\_rlnMicrographName". The star file must be 
 
 Optionally, input could be a folder where micrographs are, or a pattern where wildcards are accepted. (See https://docs.python.org/3.6/library/glob.html for more details)
 
-MicAssess will output a "good_micrographs.star" file in the same directory of the input star file. It will also create a MicAssess directory with all the predictions (converted to .jpg files), in case you want to check the performance.
+MicAssess will output "micrographs_great.star" and "micrographs_good.star" file in the same directory of the input star file. It will also create a MicAssess directory with all the predictions (converted to png), in case you want to check the performance.
 
 Note: if memory warning appears:
 (W tensorflow/core/framework/allocator.cc:108] Allocation of 999571456 exceeds 10% of system memory.)
 Reduce the batch size by adding ‘-b 16’, or even a smaller number (8 or 4). The default batch size is 32. You can also increase the batch size to a higher number like 64, if your memory allows. Higher batch size means faster.
 
-Note: We found in practice, the default threshold (0.1) will cause some empty images being misclassified to the "good" class. Increasing the threshold to 0.3 will help to solve this problem.
 
 **2DAssess:**
+Note: Since Relion 4.0 will have its own 2D classification auto-selection tool, we do not plan to update 2DAssess in the future.
 
 You will need to activate the conda environment by ```conda activate cryoassess``` before using 2DAssess.
 
