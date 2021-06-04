@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image
 import argparse
 import shutil
-from .lib import imgprep
+from . import imgprep
 # from .lib import utils
 
 def setupParserOptions():
