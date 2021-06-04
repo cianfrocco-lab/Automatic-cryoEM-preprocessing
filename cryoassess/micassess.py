@@ -192,7 +192,7 @@ def loop_files(labels, args):
                 shutil.copy2(file, os.path.join(args['output'], LABEL_LIST[i]))
 
     goodlist = goodlist + greatlist
-    shutil.rmtree(test_data_dir)
+    # shutil.rmtree(test_data_dir)
 
     return goodlist, greatlist
 
