@@ -12,7 +12,7 @@ import argparse
 from PIL import Image
 import multiprocessing as mp
 from pathlib import Path
-from lib import star
+from .lib import star
 
 def setupParserOptions():
     ap = argparse.ArgumentParser()
