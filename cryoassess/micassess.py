@@ -205,9 +205,6 @@ def loop_files(labels, args):
 
 def write_star(args, goodlist, greatlist):
 
-    star_df = star.star2df(args['input'])
-    mic_blockcode = star.micBlockcode(star_df)
-
     try:
         os.remove(os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_great.star'))
     except OSError:
@@ -219,6 +216,8 @@ def write_star(args, goodlist, greatlist):
         pass
 
     if greatlist:
+        star_df = star.star2df(args['input'])
+        mic_blockcode = star.micBlockcode(star_df)
         greatlist_base = [os.path.basename(f)[:-4] for f in greatlist]
         omitindex2 = []
         for i in range(len(star_df[mic_blockcode][0])):
@@ -230,6 +229,8 @@ def write_star(args, goodlist, greatlist):
         print('No "great" micrographs found.')
 
     if goodlist:
+        star_df = star.star2df(args['input'])
+        mic_blockcode = star.micBlockcode(star_df)    
         goodlist_base = [os.path.basename(f)[:-4] for f in goodlist]
         omitindex1 = []
         for i in range(len(star_df[mic_blockcode][0])):
