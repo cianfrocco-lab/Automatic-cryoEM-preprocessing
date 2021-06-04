@@ -43,6 +43,8 @@ def setupParserOptions():
     ap.add_argument('--threads', type=int, default=None,
                     help='Number of threads for conversion. Default is None, using mp.cpu_count(). If get memory error, set it to a reasonable number.')
     ap.add_argument('--gpus', default='0', help='Specify which gpu(s) to use, e.g. 0,1. Default is 0, which uses only one gpu.')
+    ap.add_argument('--dont_reset', default=False, action='store_true',
+                    help='If you already have the mrc files converted (to png) with a previous run of MicAssess, you can skip the conversion step by using this flag.')
     args = vars(ap.parse_args())
     return args
 
@@ -242,9 +244,11 @@ def main():
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
 
-    reset()
-    input2star(args)
-    mrc2png.mrc2png(args)
+    if not args['dont_reset']:
+        reset()
+        input2star(args)
+        mrc2png.mrc2png(args)
+        
     probs, fine_good_probs, fine_bad_probs = predict(args)
     # print(probs, fine_good_probs, fine_bad_probs)
     labels = assign_labels(probs, fine_good_probs, fine_bad_probs, (1-args['t1']), (1-args['t2']))
