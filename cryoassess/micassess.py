@@ -210,6 +210,10 @@ def write_star(args, goodlist, greatlist):
 
     try:
         os.remove(os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_great.star'))
+    except OSError:
+        pass
+
+    try:
         os.remove(os.path.join(os.path.dirname(args['input']), os.path.splitext(os.path.basename(args['input']))[0] + '_good.star'))
     except OSError:
         pass
