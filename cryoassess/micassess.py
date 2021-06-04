@@ -248,7 +248,9 @@ def main():
         reset()
         input2star(args)
         mrc2png.mrc2png(args)
-        
+    else:
+        print('Skipping the conversion step.')
+
     probs, fine_good_probs, fine_bad_probs = predict(args)
     # print(probs, fine_good_probs, fine_bad_probs)
     labels = assign_labels(probs, fine_good_probs, fine_bad_probs, (1-args['t1']), (1-args['t2']))
