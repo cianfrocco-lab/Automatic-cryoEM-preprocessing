@@ -64,8 +64,8 @@ def create_circular_mask(h, w, center=None, radius=None):
     return mask
 
 
-def mask_img(temp_img):
-    mask = create_circular_mask(temp_img.shape[0], temp_img.shape[1])
+def mask_img(temp_img, center=None, radius=None):
+    mask = create_circular_mask(temp_img.shape[0], temp_img.shape[1], center=None, radius=None)
     masked_img = temp_img.copy()
     masked_img[~mask] = 0
     return masked_img
@@ -88,7 +88,7 @@ def preprocess_c(img):
 def preprocess_l(img):
 
     h = img.shape[0]
-    w = img.shape[1]    
+    w = img.shape[1]
     # short_edge = min(img.shape[0], img.shape[1])
     # square_img = crop(img, short_edge, short_edge, position='center')
     norm_img = normalize(img)
