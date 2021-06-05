@@ -87,6 +87,8 @@ def preprocess_c(img):
 
 def preprocess_l(img):
 
+    h = img.shape[0]
+    w = img.shape[1]    
     # short_edge = min(img.shape[0], img.shape[1])
     # square_img = crop(img, short_edge, short_edge, position='center')
     norm_img = normalize(img)
@@ -97,6 +99,8 @@ def preprocess_l(img):
 
 def preprocess_r(img):
 
+    h = img.shape[0]
+    w = img.shape[1]
     # short_edge = min(img.shape[0], img.shape[1])
     # square_img = crop(img, short_edge, short_edge, position='center')
     norm_img = normalize(img)
