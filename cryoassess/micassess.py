@@ -110,22 +110,35 @@ def predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head,
     return probs, fine_good_probs, fine_bad_probs
 
 
-def predict(args):
+def build_models(args, cutpos):
 
     base_model_path = glob.glob(os.path.join(args['model'], 'base_*'))[0]
     binary_head_path = glob.glob(os.path.join(args['model'], 'fine_binary_*'))[0]
     good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))[0]
     bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))[0]
-    detector = args['detector']
     test_data_dir = os.path.join(args['output'], 'png')
 
     print('Assessing micrographs....')
 
+    if args['detector'] == 'K2':
+        img_w = 512
+    elif args['detector'] == 'K3':
+        img_w = 696
+
+    inputs = Input(shape=(IMG_DIM, img_w, 1))
+
+    if args['detector'] == 'K2' and cutpos == 'center':
+        crop = Cropping2D(cropping=((0, 0), (9, 9)))(inputs)
+    elif args['detector'] == 'K3' and cutpos == 'left':
+        crop = Cropping2D(cropping=((0, 0), (0, 202)))(inputs)
+    elif args['detector'] == 'K3' and cutpos == 'right':
+        crop = Cropping2D(cropping=((0, 0), (202, 0)))(inputs)
+
     base_model = load_model(base_model_path)
     base_model = Model(base_model.inputs, base_model.layers[-2].output)
-    inputs = Input(shape=(IMG_DIM, IMG_DIM, 1))
-    r_features = base_model(inputs, training=False)
-    f_features = Lambda(fft.radavg_logps_sigmoid_tf, name='f_features')(inputs)
+
+    r_features = base_model(crop, training=False)
+    f_features = Lambda(fft.radavg_logps_sigmoid_tf, name='f_features')(crop)
     f_features = tf.reshape(f_features, (tf.shape(inputs)[0], 247))
     features = Concatenate(axis=1)([r_features, f_features])
     base_model = Model(inputs, features)
@@ -142,14 +155,22 @@ def predict(args):
     bad_head.trainable = False
     bad_head.compile(optimizer=Adam(learning_rate = 5e-6), loss='categorical_crossentropy', metrics=[metrics.categorical_accuracy])
 
-    if detector == 'K2':
+    return base_model, binary_head, good_head, bad_head
+
+
+def predict(args):
+
+    if args['detector'] == 'K2':
+        base_model, binary_head, good_head, bad_head = build_models(args, cutpos='center')
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_c)
         probs, fine_good_probs, fine_bad_probs = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
-    elif detector == 'K3':
+    elif args['detector'] == 'K3':
+        base_model, binary_head, good_head, bad_head = build_models(args, cutpos='left')
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_l)
         probs_l, fine_good_probs_l, fine_bad_probs_l = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 
+        base_model, binary_head, good_head, bad_head = build_models(args, cutpos='right')
         test_datagen = ImageDataGenerator(preprocessing_function=utils.preprocess_r)
         probs_r, fine_good_probs_r, fine_bad_probs_r = predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args)
 

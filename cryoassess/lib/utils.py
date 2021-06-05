@@ -49,7 +49,7 @@ def crop(img, cropx, cropy, position):
 def normalize(x):
     # x /= 127.5
     # x -= 1.
-    x = (x - np.mean(x)) / np.std(x)    
+    x = (x - np.mean(x)) / np.std(x)
     return x
 
 
@@ -77,27 +77,30 @@ def preprocess_c(img):
     Normalize the image from -1 to 1.
     And then apply a circular mask to make it rotatable.
     '''
-    short_edge = min(img.shape[0], img.shape[1])
-    square_img = crop(img, short_edge, short_edge, position='center')
-    norm_img = normalize(square_img)
+    # short_edge = min(img.shape[0], img.shape[1])
+    # square_img = crop(img, short_edge, short_edge, position='center')
+    norm_img = normalize(img)
+    # norm_img = normalize(square_img)
     masked_img = mask_img(norm_img)
 
     return masked_img
 
 def preprocess_l(img):
 
-    short_edge = min(img.shape[0], img.shape[1])
-    square_img = crop(img, short_edge, short_edge, position='left')
-    norm_img = normalize(square_img)
-    masked_img = mask_img(norm_img)
+    # short_edge = min(img.shape[0], img.shape[1])
+    # square_img = crop(img, short_edge, short_edge, position='center')
+    norm_img = normalize(img)
+    # norm_img = normalize(square_img)
+    masked_img = mask_img(norm_img, center=[int(h/2), int(h/2)])
 
     return masked_img
 
 def preprocess_r(img):
 
-    short_edge = min(img.shape[0], img.shape[1])
-    square_img = crop(img, short_edge, short_edge, position='right')
-    norm_img = normalize(square_img)
-    masked_img = mask_img(norm_img)
+    # short_edge = min(img.shape[0], img.shape[1])
+    # square_img = crop(img, short_edge, short_edge, position='center')
+    norm_img = normalize(img)
+    # norm_img = normalize(square_img)
+    masked_img = mask_img(norm_img, center=[int(w-h/2), int(h/2)])
 
     return masked_img
