@@ -122,8 +122,6 @@ def build_models(args, cutpos):
     good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))[0]
     bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))[0]
 
-    print('Assessing micrographs....')
-
     if args['detector'] == 'K2':
         img_w = 512
     elif args['detector'] == 'K3':
@@ -163,6 +161,8 @@ def build_models(args, cutpos):
 
 
 def predict(args):
+
+    print('Assessing micrographs....')
 
     test_data_dir = os.path.join(args['output'], 'png')
 
