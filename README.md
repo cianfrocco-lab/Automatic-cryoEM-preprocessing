@@ -7,7 +7,7 @@ MicAssess and 2DAssess are incorporated into the freely available for academic r
 
 **Updates (v1.0.0)**
 We have updated cryoassess package to 1.0! MicAssess has a big update whereas 2DAssess is unchanged.
-
+![MicAssess v1.0](./MicAssess_v1.0.png)
 The major change of MicAssess is that it now predicts 6 labels instead of 2. The 6 labels are:
   1. Great
   2. Decent
