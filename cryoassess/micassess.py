@@ -92,9 +92,14 @@ def input2star(args):
 
 def predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head, bad_head, args):
 
+    if args['detector'] == 'K2':
+        img_w = 512
+    elif args['detector'] == 'K3':
+        img_w = 696
+
     test_generator = test_datagen.flow_from_directory(
         test_data_dir,
-        target_size=(IMG_DIM, IMG_DIM),
+        target_size=(IMG_DIM, img_w),
         batch_size=args['batch_size'],
         color_mode='grayscale',
         class_mode=None,
