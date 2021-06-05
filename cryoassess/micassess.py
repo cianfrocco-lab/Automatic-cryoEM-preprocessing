@@ -121,7 +121,6 @@ def build_models(args, cutpos):
     binary_head_path = glob.glob(os.path.join(args['model'], 'fine_binary_*'))[0]
     good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))[0]
     bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))[0]
-    test_data_dir = os.path.join(args['output'], 'png')
 
     print('Assessing micrographs....')
 
@@ -164,6 +163,8 @@ def build_models(args, cutpos):
 
 
 def predict(args):
+
+    test_data_dir = os.path.join(args['output'], 'png')
 
     if args['detector'] == 'K2':
         base_model, binary_head, good_head, bad_head = build_models(args, cutpos='center')
