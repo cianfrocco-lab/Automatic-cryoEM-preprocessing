@@ -57,7 +57,7 @@ conda env remove --name cryoassess
 
 1. Create an anaconda environment
 ```
-conda create -n cryoassess -c anaconda python=3.7 cudnn=7.6.5
+conda create -n cryoassess -c anaconda python=3.7 cudatoolkit=10.1
 ```
 2. Activate this conda environment by
 ```
