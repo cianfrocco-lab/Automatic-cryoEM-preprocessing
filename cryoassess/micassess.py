@@ -117,45 +117,50 @@ def predict_one(test_datagen, test_data_dir, base_model, binary_head, good_head,
 
 def build_models(args, cutpos):
 
-    base_model_path = glob.glob(os.path.join(args['model'], 'base_*'))[0]
-    binary_head_path = glob.glob(os.path.join(args['model'], 'fine_binary_*'))[0]
-    good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))[0]
-    bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))[0]
+    strategy = tf.distribute.MirroredStrategy(devices=None)
+    print('[INFO]: Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
-    if args['detector'] == 'K2':
-        img_w = 512
-    elif args['detector'] == 'K3':
-        img_w = 696
+    with strategy.scope():
 
-    inputs = Input(shape=(IMG_DIM, img_w, 1))
+        base_model_path = glob.glob(os.path.join(args['model'], 'base_*'))[0]
+        binary_head_path = glob.glob(os.path.join(args['model'], 'fine_binary_*'))[0]
+        good_head_path = glob.glob(os.path.join(args['model'], 'fine_good_*'))[0]
+        bad_head_path = glob.glob(os.path.join(args['model'], 'fine_bad_*'))[0]
 
-    if args['detector'] == 'K2' and cutpos == 'center':
-        crop = Cropping2D(cropping=((0, 0), (9, 9)))(inputs)
-    elif args['detector'] == 'K3' and cutpos == 'left':
-        crop = Cropping2D(cropping=((0, 0), (0, 202)))(inputs)
-    elif args['detector'] == 'K3' and cutpos == 'right':
-        crop = Cropping2D(cropping=((0, 0), (202, 0)))(inputs)
+        if args['detector'] == 'K2':
+            img_w = 512
+        elif args['detector'] == 'K3':
+            img_w = 696
 
-    base_model = load_model(base_model_path)
-    base_model = Model(base_model.inputs, base_model.layers[-2].output)
+        inputs = Input(shape=(IMG_DIM, img_w, 1))
 
-    r_features = base_model(crop, training=False)
-    f_features = Lambda(fft.radavg_logps_sigmoid_tf, name='f_features')(crop)
-    f_features = tf.reshape(f_features, (tf.shape(inputs)[0], 247))
-    features = Concatenate(axis=1)([r_features, f_features])
-    base_model = Model(inputs, features)
+        if args['detector'] == 'K2' and cutpos == 'center':
+            crop = Cropping2D(cropping=((0, 0), (9, 9)))(inputs)
+        elif args['detector'] == 'K3' and cutpos == 'left':
+            crop = Cropping2D(cropping=((0, 0), (0, 202)))(inputs)
+        elif args['detector'] == 'K3' and cutpos == 'right':
+            crop = Cropping2D(cropping=((0, 0), (202, 0)))(inputs)
 
-    binary_head = load_model(binary_head_path)
-    binary_head.trainable = False
-    binary_head.compile(optimizer = Adam(learning_rate = 5e-6), loss = 'binary_crossentropy', metrics = ['accuracy'])
+        base_model = load_model(base_model_path)
+        base_model = Model(base_model.inputs, base_model.layers[-2].output)
 
-    good_head = load_model(good_head_path)
-    good_head.trainable = False
-    good_head.compile(optimizer = Adam(learning_rate = 5e-6), loss = 'binary_crossentropy', metrics = ['accuracy'])
+        r_features = base_model(crop, training=False)
+        f_features = Lambda(fft.radavg_logps_sigmoid_tf, name='f_features')(crop)
+        f_features = tf.reshape(f_features, (tf.shape(inputs)[0], 247))
+        features = Concatenate(axis=1)([r_features, f_features])
+        base_model = Model(inputs, features)
 
-    bad_head = load_model(bad_head_path)
-    bad_head.trainable = False
-    bad_head.compile(optimizer=Adam(learning_rate = 5e-6), loss='categorical_crossentropy', metrics=[metrics.categorical_accuracy])
+        binary_head = load_model(binary_head_path)
+        binary_head.trainable = False
+        binary_head.compile(optimizer = Adam(learning_rate = 5e-6), loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+        good_head = load_model(good_head_path)
+        good_head.trainable = False
+        good_head.compile(optimizer = Adam(learning_rate = 5e-6), loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+        bad_head = load_model(bad_head_path)
+        bad_head.trainable = False
+        bad_head.compile(optimizer=Adam(learning_rate = 5e-6), loss='categorical_crossentropy', metrics=[metrics.categorical_accuracy])
 
     return base_model, binary_head, good_head, bad_head
 
