@@ -6,6 +6,7 @@ import multiprocessing as mp
 import argparse
 from pathlib import Path
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # INFO and WARNING messages are not printed
 import tensorflow as tf
 from tensorflow import keras
 
@@ -301,9 +302,6 @@ def report(labels, greatlist, goodlist):
 
 def main():
     args = setupParserOptions()
-
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # INFO and WARNING messages are not printed
-
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"]=args['gpus']  # specify which GPU(s) to be used
 
