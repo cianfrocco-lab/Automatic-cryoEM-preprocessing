@@ -117,8 +117,11 @@ MicAssess will output "micrographs_great.star" and "micrographs_good.star" file 
 
 Note: if memory warning appears:
 (W tensorflow/core/framework/allocator.cc:108] Allocation of 999571456 exceeds 10% of system memory.)
-Reduce the batch size by adding ‘-b 16’, or even a smaller number (8 or 4). The default batch size is 32. You can also increase the batch size to a higher number like 64, if your memory allows. Higher batch size means faster.
+Reduce the batch size by adding ‘-b 16’, or even a smaller number (8 or 4). The default batch size is 32. You can also increase the batch size to a higher number like 64, if your memory allows. Higher batch size is usually faster.
 
+Note on parameter tuning:
+ - If you want to keep as many "good" data as possible without worrying too much about some bad data being misclassified as the good ones, you should use a low `--t1` (0.1 or even lower).
+ - If you just want to get the "great" data as clean as possible and don't really care about losing some "good/great" data, consider using a higher `--t1` (0.2 ~ 0.5). `--t2` can be leave as default of even higher to be more stringent.
 
 **2DAssess:**
 Note: Since Relion 4.0 will have its own 2D classification auto-selection tool, we do not plan to update 2DAssess in the future.
