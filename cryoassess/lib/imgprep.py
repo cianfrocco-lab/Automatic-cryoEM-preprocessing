@@ -3,7 +3,7 @@ Helper functions for simple image preprocessing used.
 '''
 import numpy as np
 from PIL import Image
-from scipy import ndimage
+# from scipy import ndimage
 import pandas as pd
 # from PIL import ImageOps
 
@@ -45,8 +45,8 @@ def scaleImage(img, height=494):
     '''
     Downsample image, scale the pixel value from 0-255 and save it as the Image object.
     '''
-    img = downsample(img, height)
-    new_img = ((img-img.min())/((img.max()-img.min())+1e-7)*255).astype('uint8')
+    new_img = downsample(img, height)
+    new_img = ((new_img-new_img.min())/((new_img.max()-new_img.min())+1e-7)*255).astype('uint8')
     new_img = Image.fromarray(new_img)
     new_img = new_img.convert("L")
     return new_img

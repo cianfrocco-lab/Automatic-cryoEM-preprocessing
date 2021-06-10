@@ -21,9 +21,9 @@ from functools import partial, update_wrapper
 from itertools import product
 import re
 from cryoassess.lib.check_center import checkCenter
-from cryoassess.mrcs2jpg import mrcs2jpg
-from cryoassess.lib import imgprep
-from cryoassess.lib import utils
+from cryoassess.lib.mrcs2jpg import mrcs2jpg
+# from cryoassess.lib import imgprep
+# from cryoassess.lib import utils
 
 
 def setupParserOptions():
