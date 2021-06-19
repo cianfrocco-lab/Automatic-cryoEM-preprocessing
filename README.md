@@ -64,15 +64,15 @@ conda create -n cryoassess -c anaconda -c conda-forge python=3.7 cudatoolkit=11.
 conda activate cryoassess
 ```
 3. Install cryoassess (this package)
-#Navigate to the local path for the installation files to be downloaded with git clone
+- Navigate to the local path for the installation files to be downloaded with git clone
 ```
 cd /path/to/local/clone
 ```
-#Clone the installation files
+- Clone the installation files
 ```
 git clone https://github.com/cianfrocco-lab/Automatic-cryoEM-preprocessing.git
 ```
-#Install
+- Install
 ```
 pip install path/to/local/clone/Automatic-cryoEM-preprocessing/
 ```
