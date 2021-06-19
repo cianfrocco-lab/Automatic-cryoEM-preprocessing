@@ -33,7 +33,7 @@ def setupParserOptions():
                          "All of the micrographs must be in mrc format. Cannot contain other directories inside (excluding directories made by MicAssess).",
                     required=True)
     ap.add_argument('-d', '--detector', default='K2', help='K2 or K3 detector?')
-    ap.add_argument('-m', '--model', default='/lsi/groups/mcianfroccolab/yilai/codes/cryoassess-train/models', help='Path to all the model files.')
+    ap.add_argument('-m', '--model', default='./models', help='Path to all the model files.')
     ap.add_argument('-o', '--output', default='MicAssess', help="Name of the output directory. Default is MicAssess.")
     ap.add_argument('-b', '--batch_size', type=int, default=32,
                     help="Batch size used in prediction. Default is 32. If memory error/warning appears, try lower this number to 16, 8, or even lower.")

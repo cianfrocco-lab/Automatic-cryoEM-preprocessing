@@ -64,6 +64,7 @@ conda create -n cryoassess -c anaconda -c conda-forge python=3.7 cudatoolkit=11.
 conda activate cryoassess
 ```
 3. Install cryoassess (this package)
+
 - Navigate to the local path for the installation files to be downloaded with git clone
 ```
 cd /path/to/local/clone
