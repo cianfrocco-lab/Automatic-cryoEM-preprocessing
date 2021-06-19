@@ -87,7 +87,7 @@ def input2star(args):
     f.write("_rlnMicrographName\n")
     f.writelines('\n'.join(micList))
     f.close()
-
+    
     args['input'] = newStarFile
 
 
@@ -319,9 +319,6 @@ def main():
     goodlist, greatlist = loop_files(labels, args)
     write_star(args, goodlist, greatlist)
     report(labels, greatlist, goodlist)
-
-
-
 
 
 if __name__ == '__main__':
