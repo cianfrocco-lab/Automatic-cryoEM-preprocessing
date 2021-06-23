@@ -6,24 +6,22 @@ with corresponding labels in the input directory path.
 Input should be the mrcs file of the 2D class averages.
 Will also save a goodlist file (pickle file) for future use.
 '''
-
-from keras.models import *
-from keras.preprocessing.image import ImageDataGenerator
-from keras import metrics
-from keras.optimizers import *
-import numpy as np
 import os
-import argparse
-from shutil import copy2
-import shutil
+import numpy as np
 import glob
+import shutil
+from shutil import copy2
+import argparse
 from functools import partial, update_wrapper
 from itertools import product
 import re
+
+from tensorflow.keras.models import *
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import metrics
+from tensorflow.keras.optimizers import *
 from cryoassess.lib.check_center import checkCenter
 from cryoassess.lib.mrcs2jpg import mrcs2jpg
-# from cryoassess.lib import imgprep
-# from cryoassess.lib import utils
 
 
 def setupParserOptions():
